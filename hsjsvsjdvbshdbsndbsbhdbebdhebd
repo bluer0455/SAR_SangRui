@@ -1,0 +1,160 @@
+--[[
+	警告：注意！此脚本尚未经过ScriptBlox验证！请自行承担使用风险！
+]]
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local LocalPlayer = Players.LocalPlayer
+local Workspace = game:GetService("Workspace")
+
+local angle = 1
+local radius = 10
+-- 默认关闭黑洞效果（与UI开关初始状态一致）
+local blackHoleActive = false  
+
+-- 初始化玩家相关部件
+local function setupPlayer()
+    local character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+    local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
+
+    local folder = Instance.new("Folder", Workspace)
+    local part = Instance.new("Part", folder)
+    local attachment1 = Instance.new("Attachment", part)
+    part.Anchored = true
+    part.CanCollide = false
+    part.Transparency = 1
+
+    return humanoidRootPart, attachment1
+end
+
+local humanoidRootPart, attachment1 = setupPlayer()
+
+-- 物理部件管理系统
+if not getgenv().Network then
+    getgenv().Network = {
+        BaseParts = {},
+        Velocity = Vector3.new(14.46262424, 14.46262424, 14.46262424)
+    }
+
+    Network.RetainPart = function(part)
+        if typeof(part) == "Instance" and part:IsA("BasePart") and part:IsDescendantOf(Workspace) then
+            table.insert(Network.BaseParts, part)
+            part.CustomPhysicalProperties = PhysicalProperties.new(0, 0, 0, 0, 0)
+            part.CanCollide = false
+        end
+    end
+
+    local function EnablePartControl()
+        LocalPlayer.ReplicationFocus = Workspace
+        RunService.Heartbeat:Connect(function()
+            sethiddenproperty(LocalPlayer, "SimulationRadius", math.huge)
+            for _, part in pairs(Network.BaseParts) do
+                if part:IsDescendantOf(Workspace) then
+                    part.Velocity = Network.Velocity
+                end
+            end
+        end)
+    end
+
+    EnablePartControl()
+end
+
+-- 对物体应用黑洞力场
+local function ForcePart(v)
+    if v:IsA("Part") and not v.Anchored and not v.Parent:FindFirstChild("Humanoid") and not v.Parent:FindFirstChild("Head") and v.Name ~= "Handle" then
+        -- 清除原有物理组件
+        for _, x in next, v:GetChildren() do
+            if x:IsA("BodyAngularVelocity") or x:IsA("BodyForce") or x:IsA("BodyGyro") or x:IsA("BodyPosition") or x:IsA("BodyThrust") or x:IsA("BodyVelocity") or x:IsA("RocketPropulsion") then
+                x:Destroy()
+            end
+        end
+        -- 移除多余附件
+        if v:FindFirstChild("Attachment") then v:FindFirstChild("Attachment"):Destroy() end
+        if v:FindFirstChild("AlignPosition") then v:FindFirstChild("AlignPosition"):Destroy() end
+        if v:FindFirstChild("Torque") then v:FindFirstChild("Torque"):Destroy() end
+        
+        v.CanCollide = false
+        
+        -- 创建黑洞所需的物理组件
+        local torque = Instance.new("Torque", v)
+        torque.Torque = Vector3.new(1000000, 1000000, 1000000)
+        local alignPosition = Instance.new("AlignPosition", v)
+        local attachment2 = Instance.new("Attachment", v)
+        torque.Attachment0 = attachment2
+        alignPosition.MaxForce = math.huge
+        alignPosition.MaxVelocity = math.huge
+        alignPosition.Responsiveness = 500
+        alignPosition.Attachment0 = attachment2
+        alignPosition.Attachment1 = attachment1
+    end
+end
+
+-- 切换黑洞状态（核心逻辑）
+local function toggleBlackHole()
+    blackHoleActive = not blackHoleActive
+    if blackHoleActive then
+        -- 初始化时对所有现有物体应用力场
+        for _, v in next, Workspace:GetDescendants() do
+            ForcePart(v)
+        end
+
+        -- 监听新生成的物体并应用力场
+        Workspace.DescendantAdded:Connect(function(v)
+            if blackHoleActive then
+                ForcePart(v)
+            end
+        end)
+
+        -- 异步更新黑洞锚点位置（环绕玩家旋转）
+        spawn(function()
+            while blackHoleActive and RunService.RenderStepped:Wait() do
+                angle = angle + math.rad(2)
+                local offsetX = math.cos(angle) * radius
+                local offsetZ = math.sin(angle) * radius
+                attachment1.WorldCFrame = humanoidRootPart.CFrame * CFrame.new(offsetX, 0, offsetZ)
+            end
+        end)
+    else
+        -- 关闭时隐藏锚点（确保视觉和逻辑同步）
+        attachment1.WorldCFrame = CFrame.new(0, -1000, 0)
+        -- 清空物理部件列表（可选优化）
+        Network.BaseParts = {}
+    end
+end
+
+-- 角色加载时重新初始化（避免切换角色导致的错误）
+LocalPlayer.CharacterAdded:Connect(function()
+    humanoidRootPart, attachment1 = setupPlayer()
+    if blackHoleActive then toggleBlackHole() end  -- 仅在已启用时恢复状态
+end)
+
+-- ====== 用户界面（TurtleUiLib） ======
+local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/miroeramaa/TurtleLib/main/TurtleUiLib.lua"))()
+local window = library:Window("黑洞控制界面")  -- 汉化窗口标题
+
+-- 滑动条：控制黑洞作用半径（显示当前值，范围1-100）
+window:Slider("黑洞半径", 1, 100, 10, function(value)
+    radius = value  -- 实时更新半径
+end)
+
+-- 开关：严格控制黑洞启用状态（默认关闭，与逻辑变量一致）
+window:Toggle("启用黑洞效果", false, function(enabled)  
+    if enabled then
+        toggleBlackHole()  -- 仅在用户点击启用时激活
+    else
+        blackHoleActive = false  -- 确保逻辑状态与UI同步
+        attachment1.WorldCFrame = CFrame.new(0, -1000, 0)  -- 关闭时隐藏锚点
+    end
+end)
+
+-- 持续旋转逻辑（仅在黑洞激活时运行）
+spawn(function()
+    while true do
+        RunService.RenderStepped:Wait()
+        if blackHoleActive then
+            angle = angle + math.rad(2)  -- 保持固定旋转速度
+        end
+    end
+end)
+
+-- 初始化时 **不自动启用黑洞**（完全依赖UI操作）
+-- 移除原代码最后的toggleBlackHole()调用，避免默认开启
