@@ -1,0 +1,1539 @@
+local library = loadstring(game:HttpGet("https://pastebin.com/raw/3vQbADjh", true))()
+
+local window = library:new("SAR.")
+
+local lighting = game:GetService("Lighting")
+local runService = game:GetService("RunService")
+
+local defaultTime = 12
+local currentTime = defaultTime
+lighting.ClockTime = defaultTime
+
+local creds = window:Tab("关于", "6035145364")
+local bin = creds:section("公告", true)
+bin:Label("这个是半缝合脚本")
+bin:Label("不要来圈钱")
+bin:Label("作者QQ:2741747218")
+
+local credits = creds:section("更新预告", false)
+credits:Label("下次更新会在动画区新增其他动画播放")
+credits:Label("下次更新会在动画区新增动画ID提取脚本")
+credits:Label("下次更新会在动画区新增动画ID播放脚本")
+credits:Label("因为这是测试版所以下次我会更新游戏脚本")
+
+local credits = creds:section("帮助者", false)
+credits:Label("NO1:claud.ai")
+credits:Label("NO2:豆包.ai")
+credits:Label("NO3:deepseek.ai")
+
+local credits = creds:section("设置", true)
+credits:Toggle("移除UI辉光", "", false, function(state)
+    if state then
+        game:GetService("CoreGui")["frosty is cute"].Main.DropShadowHolder.Visible = false
+    else
+        game:GetService("CoreGui")["frosty is cute"].Main.DropShadowHolder.Visible = true
+    end
+end)
+
+credits:Toggle("显示时间", "", false, function(state)
+    if state then
+        TimeGui = Instance.new("ScreenGui")
+        TimeLabel = Instance.new("TextLabel")
+        
+        TimeGui.Name = "TimeDisplay"
+        TimeGui.Parent = game.CoreGui
+        TimeGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+        
+        TimeLabel.Parent = TimeGui
+        TimeLabel.BackgroundTransparency = 1
+        TimeLabel.Position = UDim2.new(0.75, 0, 0.010, 0)
+        TimeLabel.Size = UDim2.new(0, 133, 0, 30)
+        TimeLabel.Font = Enum.Font.GothamSemibold
+        TimeLabel.TextColor3 = Color3.new(1, 1, 1)
+        TimeLabel.TextScaled = true
+        TimeLabel.TextWrapped = true
+        
+        HeartbeatConnection = game:GetService("RunService").Heartbeat:Connect(function()
+            TimeLabel.Text = os.date("SAR:%H时%M分%S秒")
+        end)
+    else
+        if HeartbeatConnection then
+            HeartbeatConnection:Disconnect()
+            HeartbeatConnection = nil
+        end
+        if TimeGui then
+            TimeGui:Destroy()
+            TimeGui = nil
+        end
+    end
+end)
+
+credits:Button("摧毁GUI",function()
+    game:GetService("CoreGui")["frosty is cute"]:Destroy()
+end)
+
+local creds = window:Tab("属性", "6031097229")
+local credits = creds:section("人物属性", true)
+
+local lockedProperties = {
+    WalkSpeed = false,
+    JumpPower = false,
+    Gravity = false,
+    HipHeight = false,
+    CameraMaxZoomDistance = false,
+    FieldOfView = false
+}
+
+local function getDefaultValues()
+    local defaults = {}
+    local player = game.Players.LocalPlayer
+    
+    if player.Character and player.Character:FindFirstChild("Humanoid") then
+        defaults.WalkSpeed = player.Character.Humanoid.WalkSpeed
+        defaults.JumpPower = player.Character.Humanoid.JumpPower
+        defaults.HipHeight = player.Character.Humanoid.HipHeight
+    else
+        
+        defaults.WalkSpeed = 16
+        defaults.JumpPower = 50
+        defaults.HipHeight = 2
+    end
+   
+    defaults.Gravity = workspace.Gravity
+    defaults.CameraMaxZoomDistance = player.CameraMaxZoomDistance
+    defaults.FieldOfView = workspace.CurrentCamera.FieldOfView
+    
+    return defaults
+end
+
+local defaultValues = getDefaultValues()
+
+local playerSettings = {
+    WalkSpeed = defaultValues.WalkSpeed,
+    JumpPower = defaultValues.JumpPower,
+    Gravity = defaultValues.Gravity,
+    HipHeight = defaultValues.HipHeight,
+    CameraMaxZoomDistance = defaultValues.CameraMaxZoomDistance,
+    FieldOfView = defaultValues.FieldOfView
+}
+
+local function updatePlayerAttributes()
+    local player = game.Players.LocalPlayer
+    if player.Character and player.Character:FindFirstChild("Humanoid") then
+        if not lockedProperties.WalkSpeed then
+            player.Character.Humanoid.WalkSpeed = math.min(playerSettings.WalkSpeed, 500)
+        end
+        if not lockedProperties.JumpPower then
+            player.Character.Humanoid.JumpPower = math.min(playerSettings.JumpPower, 500)
+        end
+        if not lockedProperties.HipHeight then
+            player.Character.Humanoid.HipHeight = math.min(playerSettings.HipHeight, 500)
+        end
+    end
+    if not lockedProperties.Gravity then
+        game.Workspace.Gravity = playerSettings.Gravity
+    end
+    if not lockedProperties.CameraMaxZoomDistance then
+        player.CameraMaxZoomDistance = playerSettings.CameraMaxZoomDistance
+    end
+    if not lockedProperties.FieldOfView then
+        game.Workspace.CurrentCamera.FieldOfView = math.min(playerSettings.FieldOfView, 120)
+    end
+end
+
+local function lockProperty(propertyName, value)
+    lockedProperties[propertyName] = value
+    
+    if value then
+        if propertyName == "WalkSpeed" or propertyName == "JumpPower" or propertyName == "HipHeight" then
+            local humanoid = game.Players.LocalPlayer.Character:FindFirstChild("Humanoid")
+            if humanoid then
+                humanoid:GetPropertyChangedSignal(propertyName):Connect(function()
+                    if lockedProperties[propertyName] then
+                        humanoid[propertyName] = playerSettings[propertyName]
+                    end
+                end)
+            end
+        elseif propertyName == "Gravity" then
+            workspace:GetPropertyChangedSignal("Gravity"):Connect(function()
+                if lockedProperties.Gravity then
+                    workspace.Gravity = playerSettings.Gravity
+                end
+            end)
+        elseif propertyName == "CameraMaxZoomDistance" then
+
+            game.Players.LocalPlayer:GetPropertyChangedSignal("CameraMaxZoomDistance"):Connect(function()
+                if lockedProperties.CameraMaxZoomDistance then
+                    game.Players.LocalPlayer.CameraMaxZoomDistance = playerSettings.CameraMaxZoomDistance
+                end
+            end)
+        elseif propertyName == "FieldOfView" then
+            workspace.CurrentCamera:GetPropertyChangedSignal("FieldOfView"):Connect(function()
+                if lockedProperties.FieldOfView then
+                    workspace.CurrentCamera.FieldOfView = playerSettings.FieldOfView
+                end
+            end)
+        end
+    end
+end
+
+game.Players.LocalPlayer.CharacterAdded:Connect(function(character)
+    local humanoid = character:WaitForChild("Humanoid")
+    if humanoid then
+        if not lockedProperties.WalkSpeed then
+            humanoid.WalkSpeed = math.min(playerSettings.WalkSpeed, 500)
+        end
+        if not lockedProperties.JumpPower then
+            humanoid.JumpPower = math.min(playerSettings.JumpPower, 500)
+        end
+        if not lockedProperties.HipHeight then
+            humanoid.HipHeight = math.min(playerSettings.HipHeight, 500)
+        end
+        
+        if lockedProperties.WalkSpeed then
+            humanoid:GetPropertyChangedSignal("WalkSpeed"):Connect(function()
+                humanoid.WalkSpeed = playerSettings.WalkSpeed
+            end)
+        end
+        if lockedProperties.JumpPower then
+            humanoid:GetPropertyChangedSignal("JumpPower"):Connect(function()
+                humanoid.JumpPower = playerSettings.JumpPower
+            end)
+        end
+        if lockedProperties.HipHeight then
+            humanoid:GetPropertyChangedSignal("HipHeight"):Connect(function()
+                humanoid.HipHeight = playerSettings.HipHeight
+            end)
+        end
+    end
+end)
+
+credits:Slider('速度 (默认:'..defaultValues.WalkSpeed..')', 'WalkspeedSlider', defaultValues.WalkSpeed, 0, 500, false, function(Value)
+    playerSettings.WalkSpeed = Value
+    updatePlayerAttributes()
+end)
+credits:Toggle("锁定速度", "", false, function(state)
+    lockProperty("WalkSpeed", state)
+end)
+
+credits:Slider('跳跃高度 (默认:'..defaultValues.JumpPower..')', 'JumpPowerSlider', defaultValues.JumpPower, 0, 500, false, function(Value)
+    playerSettings.JumpPower = Value
+    updatePlayerAttributes()
+end)
+credits:Toggle("锁定跳跃高度", "", false, function(state)
+    lockProperty("JumpPower", state)
+end)
+
+credits:Slider('重力 (默认:'..defaultValues.Gravity..')', 'GravitySlider', defaultValues.Gravity, 0, 1000, false, function(Value)
+    playerSettings.Gravity = Value
+    updatePlayerAttributes()
+end)
+credits:Toggle("锁定重力", "", false, function(state)
+    lockProperty("Gravity", state)
+end)
+
+credits:Slider('高度 (默认:'..defaultValues.HipHeight..')', 'Slider', defaultValues.HipHeight, 0, 500, false, function(Value)
+    playerSettings.HipHeight = Value
+    updatePlayerAttributes()
+end)
+credits:Toggle("锁定高度", "", false, function(state)
+    lockProperty("HipHeight", state)
+end)
+
+credits:Slider('最大缩放距离 (默认:'..defaultValues.CameraMaxZoomDistance..')', 'ZOOOOOM OUT!', defaultValues.CameraMaxZoomDistance, 0, 200000, false, function(Value)
+    playerSettings.CameraMaxZoomDistance = Value
+    updatePlayerAttributes()
+end)
+credits:Toggle("锁定缩放距离", "", false, function(state)
+    lockProperty("CameraMaxZoomDistance", state)
+end)
+
+credits:Slider('超广角 (默认:'..defaultValues.FieldOfView..')', 'Sliderflag', defaultValues.FieldOfView, 0.1, 120, false, function(Value)
+    playerSettings.FieldOfView = Value
+    updatePlayerAttributes()
+end)
+credits:Toggle("锁定超广角", "", false, function(state)
+    lockProperty("FieldOfView", state)
+end)
+
+local creds = window:Tab("通用", "6031097229")
+local credits = creds:section("通用", true)
+
+local lightingDefaults = {
+    Ambient = game:GetService("Lighting").Ambient,
+    Brightness = game:GetService("Lighting").Brightness,
+    ColorShift_Bottom = game:GetService("Lighting").ColorShift_Bottom,
+    ColorShift_Top = game:GetService("Lighting").ColorShift_Top,
+    GlobalShadows = game:GetService("Lighting").GlobalShadows,
+    ShadowSoftness = game:GetService("Lighting").ShadowSoftness,
+    FogStart = game:GetService("Lighting").FogStart,
+    FogEnd = game:GetService("Lighting").FogEnd,
+    FogColor = game:GetService("Lighting").FogColor
+}
+
+credits:Toggle(
+    "夜视", 
+    "WhiteLightToggle", 
+    false, 
+    function(state)
+        if state then
+            lightingDefaults.Ambient = game:GetService("Lighting").Ambient
+            lightingDefaults.Brightness = game:GetService("Lighting").Brightness
+            game:GetService("Lighting").Ambient = Color3.fromRGB(255, 255, 255)
+            game:GetService("Lighting").Brightness = 2
+        else
+            game:GetService("Lighting").Ambient = lightingDefaults.Ambient
+            game:GetService("Lighting").Brightness = lightingDefaults.Brightness
+        end
+    end)
+
+credits:Toggle(
+    "移除阴影", 
+    "NoShadowsToggle", 
+    false, 
+    function(state)
+        if state then
+            game:GetService("Lighting").GlobalShadows = false
+            game:GetService("Lighting").ShadowSoftness = 0
+        else
+            game:GetService("Lighting").GlobalShadows = lightingDefaults.GlobalShadows
+            game:GetService("Lighting").ShadowSoftness = lightingDefaults.ShadowSoftness
+        end
+    end)
+
+credits:Toggle(
+    "移除雾效果", 
+    "NoFogToggle", 
+    false, 
+    function(state)
+        if state then
+            game:GetService("Lighting").FogStart = 100000
+            game:GetService("Lighting").FogEnd = 100000
+        else
+            game:GetService("Lighting").FogStart = lightingDefaults.FogStart
+            game:GetService("Lighting").FogEnd = lightingDefaults.FogEnd
+            game:GetService("Lighting").FogColor = lightingDefaults.FogColor
+        end
+    end)
+
+credits:Toggle(
+    "穿墙", 
+    "WallhackToggle", 
+    false, 
+    function(state)
+        local player = game.Players.LocalPlayer
+        local character = player.Character or player.CharacterAdded:Wait()
+        local humanoid = character:FindFirstChildOfClass("Humanoid")
+        
+        if not library.flags.WallhackOriginal then
+            library.flags.WallhackOriginal = {}
+        end
+
+        if state then
+            for _, part in ipairs(character:GetDescendants()) do
+                if part:IsA("BasePart") then
+                    library.flags.WallhackOriginal[part] = part.CanCollide
+                    part.CanCollide = false
+                end
+            end
+            
+            library.flags.WallhackConnection = game:GetService("RunService").Heartbeat:Connect(function()
+                for part, _ in pairs(library.flags.WallhackOriginal) do
+                    if part and part.Parent then
+                        part.CanCollide = false
+                    end
+                end
+            end)
+        else
+            if library.flags.WallhackConnection then
+                library.flags.WallhackConnection:Disconnect()
+                library.flags.WallhackConnection = nil
+            end
+            
+            for part, canCollide in pairs(library.flags.WallhackOriginal) do
+                if part and part.Parent then
+                    part.CanCollide = canCollide
+                end
+            end
+            
+            if humanoid and humanoid.FloorMaterial ~= Enum.Material.Air then
+                humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+            end
+            
+            library.flags.WallhackOriginal = {}
+        end
+    end)
+    credits:Toggle(
+    "无限跳跃",
+"InfiniteJumpToggle",
+false,
+function(state)
+    local player = game.Players.LocalPlayer
+    
+    if state then
+        library.flags.InfiniteJumpConnection = game:GetService("UserInputService").JumpRequest:Connect(function()
+            if player.Character and player.Character:FindFirstChild("Humanoid") then
+                player.Character.Humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+            end
+        end)
+    else
+        if library.flags.InfiniteJumpConnection then
+            library.flags.InfiniteJumpConnection:Disconnect()
+            library.flags.InfiniteJumpConnection = nil
+        end
+    end
+end)
+
+credits:Button("防止甩飞", function()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/bluer0455/SAR_SangRui/refs/heads/main/jsjshsbbdbebdbdbshshsbbdhshsbsuhs"))()
+end)
+
+credits:Button("飞行v3", function()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/XNEOFF/FlyGuiV3/main/FlyGuiV3.txt"))()
+end)
+
+credits:Button("飞车(汉化)", function()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/bluer0455/SAR_SangRui/refs/heads/main/bHSJjsjdSjjsJsjdJSJS"))()
+end)
+
+credits:Button("踏空行走", function()
+loadstring(game:HttpGet('https://raw.githubusercontent.com/GhostPlayer352/Test4/main/Float'))()
+end)
+
+credits:Button("贴墙跳(装跑酷大神)", function()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/bluer0455/SAR_SangRui/refs/heads/main/WallHop-V4-SARHANGHUA"))()
+end)
+
+local creds = window:Tab("光影", "6031097229")
+local credits = creds:section("自定义/调节", false)
+credits:Label("不可关闭,低端手机or电脑谨慎开启")
+
+credits:Slider('游戏内时间', 'TimeOfDaySlider', defaultTime, 0, 24, false, function(value)
+    currentTime = value
+    lighting.ClockTime = value
+end)
+
+credits:Slider('材质反光强度', 'ReflectanceStrength', 0, 0, 1, true, function(value)
+    for _, part in ipairs(game.Workspace:GetDescendants()) do
+        if part:IsA("BasePart") then
+            part.Reflectance = value
+        end
+    end
+end)
+
+credits:Slider('阴影柔和度', 'ShadowSoftness', 1, 0, 1, true, function(value)
+    lighting.GlobalShadows = true
+    lighting.ShadowSoftness = value
+end)
+
+credits:Slider('泛光强度', 'BloomIntensity', 0, 0, 5, true, function(value)
+    if not lighting:FindFirstChild("Bloom") then
+        local bloom = Instance.new("BloomEffect", lighting)
+        bloom.Name = "Bloom"
+    end
+    lighting.Bloom.Intensity = value
+end)
+
+credits:Slider('色彩校正-饱和度', 'Saturation', 0, -1, 2, true, function(value)
+    if not lighting:FindFirstChild("ColorCorrection") then
+        local cc = Instance.new("ColorCorrectionEffect", lighting)
+        cc.Name = "ColorCorrection"
+    end
+    lighting.ColorCorrection.Saturation = value
+end)
+
+credits:Slider('模糊度', 'BlurAmount', 0, 0, 50, true, function(value)
+    if not lighting:FindFirstChild("Blur") then
+        local blur = Instance.new("BlurEffect", lighting)
+        blur.Name = "Blur"
+    end
+    lighting.Blur.Size = value
+end)
+
+local credits = creds:section("光影", false)
+credits:Label("如果光影太糊 就把泛光强度拉到最满在调到零")
+
+credits:Button("动态模糊(转动视角模糊)", function()
+    local camera = workspace.CurrentCamera
+    local blurAmount = 10
+    local blurAmplifier = 5
+    local lastVector = camera.CFrame.LookVector
+    local motionBlur = Instance.new("BlurEffect", camera)
+    local runService = game:GetService("RunService")
+    
+    workspace:GetPropertyChangedSignal("CurrentCamera"):Connect(function()
+        local camera = workspace.CurrentCamera
+        if motionBlur and motionBlur.Parent then
+            motionBlur.Parent = camera
+        else
+            motionBlur = Instance.new("BlurEffect", camera)
+        end
+    end)
+    
+    runService.Heartbeat:Connect(function(deltaTime)
+        local magnitude = (camera.CFrame.LookVector - lastVector).Magnitude
+        motionBlur.Size = math.abs(magnitude) * blurAmount * blurAmplifier / 2
+        lastVector = camera.CFrame.LookVector
+    end)
+end)
+
+credits:Button("光影(晴郎效果)", function()
+loadstring(game:HttpGet("https://rawscripts.net/raw/Universal-Script-Shader-Customizable-39161"))()
+end)
+
+credits:Button("光影(黄昏效果)", function()
+loadstring(game:HttpGet("https://pastebin.com/raw/Zpaf00Nu"))()
+end)
+
+credits:Button("光影(画质提高)", function()
+local light = game.Lighting
+    for i, v in pairs(light:GetChildren()) do
+      v:Destroy()
+    end
+
+    local ter = workspace.Terrain
+    local color = Instance.new("ColorCorrectionEffect")
+    local bloom = Instance.new("BloomEffect")
+    local sun = Instance.new("SunRaysEffect")
+    local blur = Inst
+end)
+
+credits:Button("光影(画质提高)2", function()
+loadstring(game:HttpGet("https://pastebin.com/raw/jHBfJYmS"))()
+end)
+
+credits:Button("光影(超好用合集！😍光影好看)", function()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/p0e1/1/refs/heads/main/SimpleShader.lua"))()
+end)
+
+credits:Label("开启后就不能用我的脚本调节了 但是这个脚本里面自带调节😥")
+credits:Button("光影(超好用合集！😍功能更多)", function()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/randomstring0/pshade-ultimate/refs/heads/main/src/back.json"))()
+end)
+
+
+local creds = window:Tab("动画区", "6031097229")
+
+local credits = creds:section("自定义r15动画包", false)
+credits:Label("部分服务器会不生效and部分不可以用")
+credits:Label("有的动画包没有")
+
+local walkDropdown = credits:Dropdown("选择走路动画", "点击选择要修改的走路动画包", {
+"吸血鬼动画包", "宇航员动画包", "泡泡动画包", "卡通动画包", "长者动画包",
+"骑士动画包", "悬浮动画包", "法师动画包", "忍者动画包", "海盗动画包",
+"机器人动画包", "时尚动画包", "超级英雄动画包", "玩具动画包", "狼人动画包",
+"僵尸动画包", "巡逻动画包", "自信动画包", "流行明星动画包", "牛仔动画包",
+"幽灵动画包", "鬼鬼祟祟动画包", "公主动画包", "阿迪达斯运动动画包", "超级流行动画包",
+"美国国家橄榄球联盟动画包", "大胆动画包", "无界限动画包", "复古动画包", "猫步魅力动画包",
+"风格化女性动画包", "写实动画包", "厕所先生动画包", "Rthro风格动画包", "默认动画包",
+"小偷动画包", "鬼动画包", "清除动画"
+}, function(selected)
+local player = game.Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local Animate = character:WaitForChild("Animate")
+ 
+local walkAnimationIDs = {
+["吸血鬼动画包"] = "1083473930",
+["宇航员动画包"] = "891667138",
+["泡泡动画包"] = "910034870",
+["卡通动画包"] = "742640026",
+["长者动画包"] = "845403856",
+["骑士动画包"] = "657552124",
+["悬浮动画包"] = "616013216",
+["法师动画包"] = "707897309",
+["忍者动画包"] = "656121766",
+["海盗动画包"] = "750785693",
+["机器人动画包"] = "616095330",
+["时尚动画包"] = "616146177",
+["超级英雄动画包"] = "616122287",
+["玩具动画包"] = "782843345",
+["狼人动画包"] = "1083178339",
+["僵尸动画包"] = "616168032",
+["巡逻动画包"] = "1151231493",
+["自信动画包"] = "1070017263",
+["流行明星动画包"] = "1212980338",
+["牛仔动画包"] = "1014421541",
+["幽灵动画包"] = "616013216",
+["鬼鬼祟祟动画包"] = "1132510133",
+["公主动画包"] = "941028902",
+["阿迪达斯运动动画包"] = "18537392113",
+["超级流行动画包"] = "92072849924640",
+["美国国家橄榄球联盟动画包"] = "110358958299415",
+["大胆动画包"] = "16738340646",
+["无界限动画包"] = "18747074203",
+["复古动画包"] = "10921244891",
+["猫步魅力动画包"] = "109168724482748",
+["风格化女性动画包"] = "4708193840",
+["写实动画包"] = "11600249883",
+["厕所先生动画包"] = "10921269718",
+["Rthro风格动画包"] = "10921269718",
+["默认动画包"] = "913402848",
+["小偷动画包"] = "1132510133",
+["鬼动画包"] = "616013216",
+["清除动画"] = "0"
+}
+ 
+if walkAnimationIDs[selected] then
+if selected == "清除动画" then
+Animate.walk.WalkAnim.AnimationId = "http://www.roblox.com/asset/?id=0"
+else
+Animate.walk.WalkAnim.AnimationId = "http://www.roblox.com/asset/?id=" .. walkAnimationIDs[selected]
+end
+walkDropdown:SetTitle("走路动画包(" .. selected .. ")")
+end
+end)
+ 
+local runDropdown = credits:Dropdown("选择跑步动画", "点击选择要修改的跑步动画包", {
+"吸血鬼动画包", "宇航员动画包", "泡泡动画包", "卡通动画包", "长者动画包",
+"骑士动画包", "悬浮动画包", "法师动画包", "忍者动画包", "海盗动画包",
+"机器人动画包", "时尚动画包", "超级英雄动画包", "玩具动画包", "狼人动画包",
+"僵尸动画包", "巡逻动画包", "自信动画包", "流行明星动画包", "牛仔动画包",
+"幽灵动画包", "鬼鬼祟祟动画包", "公主动画包", "阿迪达斯运动动画包", "超级流行动画包",
+"美国国家橄榄球联盟动画包", "大胆动画包", "无界限动画包", "复古动画包", "猫步魅力动画包",
+"风格化女性动画包", "写实动画包", "厕所先生动画包", "Rthro风格动画包", "默认动画包",
+"小偷动画包", "鬼动画包", "清除动画"
+}, function(selected)
+local player = game.Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local Animate = character:WaitForChild("Animate")
+ 
+local runAnimationIDs = {
+["吸血鬼动画包"] = "1083462077",
+["宇航员动画包"] = "891636393",
+["泡泡动画包"] = "910025107",
+["卡通动画包"] = "742638842",
+["长者动画包"] = "845386501",
+["骑士动画包"] = "657564596",
+["悬浮动画包"] = "616010382",
+["法师动画包"] = "707861613",
+["忍者动画包"] = "656118852",
+["海盗动画包"] = "750783738",
+["机器人动画包"] = "616091570",
+["时尚动画包"] = "616140816",
+["超级英雄动画包"] = "616117076",
+["玩具动画包"] = "782842708",
+["狼人动画包"] = "1083216690",
+["僵尸动画包"] = "616163682",
+["巡逻动画包"] = "1150967949",
+["自信动画包"] = "1070001516",
+["流行明星动画包"] = "1212980348",
+["牛仔动画包"] = "1014401683",
+["幽灵动画包"] = "616013216",
+["鬼鬼祟祟动画包"] = "1132494274",
+["公主动画包"] = "941015281",
+["阿迪达斯运动动画包"] = "1853738490",
+["超级流行动画包"] = "72301599441680",
+["美国国家橄榄球联盟动画包"] = "117333533048078",
+["大胆动画包"] = "16738337225",
+["无界限动画包"] = "18747070484",
+["复古动画包"] = "10921240218",
+["猫步魅力动画包"] = "81024476153754",
+["风格化女性动画包"] = "470819270",
+["写实动画包"] = "11600211410",
+["厕所先生动画包"] = "4417979645",
+["Rthro风格动画包"] = "10921261968",
+["默认动画包"] = "913376220",
+["小偷动画包"] = "1132494274",
+["鬼动画包"] = "616013216",
+["清除动画"] = "0"
+}
+ 
+if runAnimationIDs[selected] then
+if selected == "清除动画" then
+Animate.run.RunAnim.AnimationId = "http://www.roblox.com/asset/?id=0"
+else
+Animate.run.RunAnim.AnimationId = "http://www.roblox.com/asset/?id=" .. runAnimationIDs[selected]
+end
+runDropdown:SetTitle("跑步动画包(" .. selected .. ")")
+end
+end)
+ 
+local jumpDropdown = credits:Dropdown("选择跳跃动画", "点击选择要修改的跳跃动画包", {
+"吸血鬼动画包", "宇航员动画包", "泡泡动画包", "卡通动画包", "长者动画包",
+"骑士动画包", "悬浮动画包", "法师动画包", "忍者动画包", "海盗动画包",
+"机器人动画包", "时尚动画包", "超级英雄动画包", "玩具动画包", "狼人动画包",
+"僵尸动画包", "巡逻动画包", "自信动画包", "流行明星动画包", "牛仔动画包",
+"幽灵动画包", "鬼鬼祟祟动画包", "公主动画包", "阿迪达斯运动动画包", "超级流行动画包",
+"美国国家橄榄球联盟动画包", "大胆动画包", "无界限动画包", "复古动画包", "猫步魅力动画包",
+"风格化女性动画包", "写实动画包", "厕所先生动画包", "Rthro风格动画包", "默认动画包",
+"小偷动画包", "鬼动画包", "清除动画"
+}, function(selected)
+local player = game.Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait(5)
+if not character then return end
+local Animate = character:WaitForChild("Animate", 3)
+if not Animate then return end
+ 
+local jumpIDs = {
+["吸血鬼动画包"] = "1083455352", ["宇航员动画包"] = "891627522",
+["泡泡动画包"] = "910016857", ["卡通动画包"] = "742637942",
+["长者动画包"] = "845398858", ["骑士动画包"] = "658409194",
+["悬浮动画包"] = "616008936", ["法师动画包"] = "707853694",
+["忍者动画包"] = "656117878", ["海盗动画包"] = "750782230",
+["机器人动画包"] = "616090535", ["时尚动画包"] = "616139451",
+["超级英雄动画包"] = "616115533", ["玩具动画包"] = "782847020",
+["狼人动画包"] = "1083218792", ["僵尸动画包"] = "616161997",
+["巡逻动画包"] = "1148811837", ["自信动画包"] = "1069984524",
+["流行明星动画包"] = "1212954642", ["牛仔动画包"] = "1014394726",
+["幽灵动画包"] = "616008936", ["鬼鬼祟祟动画包"] = "1132489853",
+["公主动画包"] = "941008832", ["阿迪达斯运动动画包"] = "18537380791",
+["超级流行动画包"] = "104325245285198", ["美国国家橄榄球联盟动画包"] = "119846112151352",
+["大胆动画包"] = "16738336650", ["无界限动画包"] = "18747069148",
+["复古动画包"] = "1092124201", ["猫步魅力动画包"] = "116936326516985",
+["风格化女性动画包"] = "470818802", ["写实动画包"] = "11600210487",
+["厕所先生动画包"] = "10921263860", ["Rthro风格动画包"] = "10921263860",
+["默认动画包"] = "507765000", ["小偷动画包"] = "1132489853",
+["鬼动画包"] = "616008936", ["清除动画"] = "0"
+}
+ 
+if jumpIDs[selected] then
+if selected == "清除动画" then
+Animate.jump.JumpAnim.AnimationId = "http://www.roblox.com/asset/?id=0"
+else
+Animate.jump.JumpAnim.AnimationId = "http://www.roblox.com/asset/?id=" .. jumpIDs[selected]
+end
+jumpDropdown:SetTitle("跳跃动画包(" .. selected .. ")")
+end
+end)
+
+local standDropdown = credits:Dropdown("选择站立动画", "点击选择要修改的站立动画包", {
+    "吸血鬼动画包", "宇航员动画包", "泡泡动画包", "卡通动画包", "长者动画包",
+    "骑士动画包", "悬浮动画包", "法师动画包", "忍者动画包", "海盗动画包",
+    "机器人动画包", "时尚动画包", "超级英雄动画包", "玩具动画包", "狼人动画包",
+    "僵尸动画包", "巡逻动画包", "自信动画包", "流行明星动画包", "牛仔动画包",
+    "幽灵动画包", "鬼鬼祟祟动画包", "公主动画包", "阿迪达斯运动动画包", "超级流行动画包",
+    "美国国家橄榄球联盟动画包", "大胆动画包", "无界限动画包", "复古动画包", "猫步魅力动画包",
+    "风格化女性动画包", "写实动画包", "厕所先生动画包", "Rthro风格动画包", "默认动画包",
+    "小偷动画包", "鬼动画包", "清除动画"
+}, function(selected)
+    local player = game.Players.LocalPlayer
+    local character = player.Character or player.CharacterAdded:Wait(10)
+    if not character then return end
+    local Animate = character:WaitForChild("Animate", 10)
+    if not Animate then return end
+
+    local standIDs = {
+        ["吸血鬼动画包"] = "1083445855",
+        ["宇航员动画包"] = "891621366",
+        ["泡泡动画包"] = "910004836",
+        ["卡通动画包"] = "742637544",
+        ["长者动画包"] = "845397899",
+        ["骑士动画包"] = "657595757",
+        ["悬浮动画包"] = "616006778",
+        ["法师动画包"] = "707742142",
+        ["忍者动画包"] = "656117400",
+        ["海盗动画包"] = "750781874",
+        ["机器人动画包"] = "616088211",
+        ["时尚动画包"] = "616136790",
+        ["超级英雄动画包"] = "616111295",
+        ["玩具动画包"] = "782841498",
+        ["狼人动画包"] = "1083195517",
+        ["僵尸动画包"] = "616158929",
+        ["巡逻动画包"] = "1149612882",
+        ["自信动画包"] = "1069977950",
+        ["流行明星动画包"] = "1212900985",
+        ["牛仔动画包"] = "1014390418",
+        ["幽灵动画包"] = "616006778",
+        ["鬼鬼祟祟动画包"] = "1132473842",
+        ["公主动画包"] = "941003647",
+        ["阿迪达斯运动动画包"] = "1853737649",
+        ["超级流行动画包"] = "118832222982049",
+        ["美国国家橄榄球联盟动画包"] = "92080889861410",
+        ["大胆动画包"] = "16738333868",
+        ["无界限动画包"] = "18747067405",
+        ["复古动画包"] = "10921230744",
+        ["猫步魅力动画包"] = "119377220967554",
+        ["风格化女性动画包"] = "4708192150",
+        ["写实动画包"] = "1717301424",
+        ["厕所先生动画包"] = "441797862",
+        ["Rthro风格动画包"] = "10921258489",
+        ["默认动画包"] = "507766666",
+        ["小偷动画包"] = "1132473842",
+        ["鬼动画包"] = "616006778",
+        ["清除动画"] = "0"
+    }
+
+    if standIDs[selected] then
+        if selected == "清除动画" then
+            Animate.idle.Animation1.AnimationId = "http://www.roblox.com/asset/?id=0"
+            Animate.idle.Animation2.AnimationId = "http://www.roblox.com/asset/?id=0"
+        else
+            Animate.idle.Animation1.AnimationId = "http://www.roblox.com/asset/?id=" .. standIDs[selected]
+            -- 自动计算 Animation2 ID（原逻辑）
+            local baseId = standIDs[selected]:match("%d+")
+            if baseId then
+                Animate.idle.Animation2.AnimationId = "http://www.roblox.com/asset/?id=" .. (tonumber(baseId) + 1)
+            end
+        end
+        standDropdown:SetTitle("站立动画包(" .. selected .. ")")
+    end
+end)
+
+local fallDropdown = credits:Dropdown("选择下坠动画", "点击选择要修改的下坠动画包", {
+    "吸血鬼动画包", "宇航员动画包", "泡泡动画包", "卡通动画包", "长者动画包",
+    "骑士动画包", "悬浮动画包", "法师动画包", "忍者动画包", "海盗动画包",
+    "机器人动画包", "时尚动画包", "超级英雄动画包", "玩具动画包", "狼人动画包",
+    "僵尸动画包", "巡逻动画包", "自信动画包", "流行明星动画包", "牛仔动画包",
+    "幽灵动画包", "鬼鬼祟祟动画包", "公主动画包", "阿迪达斯运动动画包", "超级流行动画包",
+    "美国国家橄榄球联盟动画包", "大胆动画包", "无界限动画包", "复古动画包", "猫步魅力动画包",
+    "风格化女性动画包", "写实动画包", "厕所先生动画包", "Rthro风格动画包", "默认动画包",
+    "小偷动画包", "鬼动画包", "清除动画"
+}, function(selected)
+    local player = game.Players.LocalPlayer
+    local character = player.Character or player.CharacterAdded:Wait(10)
+    if not character then return end
+    local Animate = character:WaitForChild("Animate", 10)
+    if not Animate then return end
+
+    local fallIDs = {
+        ["吸血鬼动画包"] = "1083443587",
+        ["宇航员动画包"] = "891617961",
+        ["泡泡动画包"] = "910001910",
+        ["卡通动画包"] = "742637151",
+        ["长者动画包"] = "845396048",
+        ["骑士动画包"] = "657600338",
+        ["悬浮动画包"] = "616005863",
+        ["法师动画包"] = "707829716",
+        ["忍者动画包"] = "656115606",
+        ["海盗动画包"] = "750780242",
+        ["机器人动画包"] = "616087089",
+        ["时尚动画包"] = "616134815",
+        ["超级英雄动画包"] = "616108001",
+        ["玩具动画包"] = "782846423",
+        ["狼人动画包"] = "1083189019",
+        ["僵尸动画包"] = "616157476",
+        ["巡逻动画包"] = "1148863382",
+        ["自信动画包"] = "1069973677",
+        ["流行明星动画包"] = "1212900995",
+        ["牛仔动画包"] = "1014384571",
+        ["幽灵动画包"] = "616005863",
+        ["鬼鬼祟祟动画包"] = "1132469004",
+        ["公主动画包"] = "941000007",
+        ["阿迪达斯运动动画包"] = "1853736728",
+        ["超级流行动画包"] = "121152442762481",
+        ["美国国家橄榄球联盟动画包"] = "129773241321032",
+        ["大胆动画包"] = "16738333171",
+        ["无界限动画包"] = "18747062535",
+        ["复古动画包"] = "10921241244",
+        ["猫步魅力动画包"] = "92294537340807",
+        ["风格化女性动画包"] = "470818616",
+        ["写实动画包"] = "11600206437",
+        ["厕所先生动画包"] = "10921262864",
+        ["Rthro风格动画包"] = "10921262864",
+        ["默认动画包"] = "507767968",
+        ["小偷动画包"] = "1132469004",
+        ["鬼动画包"] = "616005863",
+        ["清除动画"] = "0"
+    }
+
+    if fallIDs[selected] then
+        if selected == "清除动画" then
+            Animate.fall.FallAnim.AnimationId = "http://www.roblox.com/asset/?id=0"
+        else
+            Animate.fall.FallAnim.AnimationId = "http://www.roblox.com/asset/?id=" .. fallIDs[selected]
+        end
+        fallDropdown:SetTitle("下坠动画包(" .. selected .. ")")
+    end
+end)
+
+local climbDropdown = credits:Dropdown("选择攀爬动画", "点击选择要修改的攀爬动画包", {
+    "吸血鬼动画包", "宇航员动画包", "卡通动画包", "长者动画包",
+    "骑士动画包", "悬浮动画包", "法师动画包", "忍者动画包",
+    "海盗动画包", "机器人动画包", "时尚动画包", "超级英雄动画包",
+    "玩具动画包", "狼人动画包", "僵尸动画包", "巡逻动画包",
+    "自信动画包", "牛仔动画包", "幽灵动画包", "鬼鬼祟祟动画包",
+    "公主动画包", "阿迪达斯运动动画包", "复古动画包", "风格化女性动画包",
+    "写实动画包", "厕所先生动画包", "Rthro风格动画包", "默认动画包",
+    "小偷动画包", "鬼动画包", "清除动画" -- 新增选项
+}, function(selected)
+    local player = game.Players.LocalPlayer
+    local character = player.Character or player.CharacterAdded:Wait(10)
+    if not character then return end
+    local Animate = character:WaitForChild("Animate", 10)
+    if not Animate then return end
+
+    local climbIDs = {
+        ["吸血鬼动画包"] = "1083439238",
+        ["宇航员动画包"] = "891609353",
+        ["卡通动画包"] = "742636889",
+        ["长者动画包"] = "845392038",
+        ["骑士动画包"] = "658360781",
+        ["悬浮动画包"] = "616003713",
+        ["法师动画包"] = "707826056",
+        ["忍者动画包"] = "656114359",
+        ["海盗动画包"] = "750779899",
+        ["机器人动画包"] = "616086039",
+        ["时尚动画包"] = "616133594",
+        ["超级英雄动画包"] = "616104706",
+        ["玩具动画包"] = "782843869",
+        ["狼人动画包"] = "1083182000",
+        ["僵尸动画包"] = "616156119",
+        ["巡逻动画包"] = "1148811837",
+        ["自信动画包"] = "1069946257",
+        ["牛仔动画包"] = "1014380606",
+        ["幽灵动画包"] = "616003713",
+        ["鬼鬼祟祟动画包"] = "1132461372",
+        ["公主动画包"] = "940996062",
+        ["阿迪达斯运动动画包"] = "1853736339",
+        ["复古动画包"] = "10921229866",
+        ["风格化女性动画包"] = "470818425",
+        ["写实动画包"] = "11600205519",
+        ["厕所先生动画包"] = "10921257536",
+        ["Rthro风格动画包"] = "10921257536",
+        ["默认动画包"] = "507765644",
+        ["小偷动画包"] = "1132461372",
+        ["鬼动画包"] = "616003713",
+        ["清除动画"] = "0" -- 可选：是否允许清除攀爬动画
+    }
+
+    if climbIDs[selected] then
+        if selected == "清除动画" then
+            Animate.climb.ClimbAnim.AnimationId = "http://www.roblox.com/asset/?id=0"
+        else
+            Animate.climb.ClimbAnim.AnimationId = "http://www.roblox.com/asset/?id=" .. climbIDs[selected]
+        end
+        climbDropdown:SetTitle("攀爬动画包(" .. selected .. ")")
+    end
+end)
+
+local credits = creds:section("r15动画包", false)
+credits:Label("部分服务器会不生效")
+
+credits:Button("吸血鬼动画包", function()
+    local player = game.Players.LocalPlayer
+    local character = player.Character or player.CharacterAdded:Wait()
+    local humanoid = character:WaitForChild("Humanoid")
+    local Animate = character:WaitForChild("Animate")
+    Animate.idle.Animation1.AnimationId = "http://www.roblox.com/asset/?id=1083445855"
+    Animate.idle.Animation2.AnimationId = "http://www.roblox.com/asset/?id=1083450166"
+    Animate.walk.WalkAnim.AnimationId = "http://www.roblox.com/asset/?id=1083473930"
+    Animate.run.RunAnim.AnimationId = "http://www.roblox.com/asset/?id=1083462077"
+    Animate.jump.JumpAnim.AnimationId = "http://www.roblox.com/asset/?id=1083455352"
+    Animate.climb.ClimbAnim.AnimationId = "http://www.roblox.com/asset/?id=1083439238"
+    Animate.fall.FallAnim.AnimationId = "http://www.roblox.com/asset/?id=1083443587"
+end)
+
+credits:Button("宇航员动画包", function()
+    local player = game.Players.LocalPlayer
+    local character = player.Character or player.CharacterAdded:Wait()
+    local Animate = character:WaitForChild("Animate")
+    Animate.idle.Animation1.AnimationId = "http://www.roblox.com/asset/?id=891621366"
+    Animate.idle.Animation2.AnimationId = "http://www.roblox.com/asset/?id=891633237"
+    Animate.walk.WalkAnim.AnimationId = "http://www.roblox.com/asset/?id=891667138"
+    Animate.run.RunAnim.AnimationId = "http://www.roblox.com/asset/?id=891636393"
+    Animate.jump.JumpAnim.AnimationId = "http://www.roblox.com/asset/?id=891627522"
+    Animate.climb.ClimbAnim.AnimationId = "http://www.roblox.com/asset/?id=891609353"
+    Animate.fall.FallAnim.AnimationId = "http://www.roblox.com/asset/?id=891617961"
+end)
+
+credits:Button("泡泡动画包", function()
+    local player = game.Players.LocalPlayer
+    local character = player.Character or player.CharacterAdded:Wait()
+    local Animate = character:WaitForChild("Animate")
+    Animate.idle.Animation1.AnimationId = "http://www.roblox.com/asset/?id=910004836"
+    Animate.idle.Animation2.AnimationId = "http://www.roblox.com/asset/?id=910009958"
+    Animate.walk.WalkAnim.AnimationId = "http://www.roblox.com/asset/?id=910034870"
+    Animate.run.RunAnim.AnimationId = "http://www.roblox.com/asset/?id=910025107"
+    Animate.jump.JumpAnim.AnimationId = "http://www.roblox.com/asset/?id=910016857"
+    Animate.fall.FallAnim.AnimationId = "http://www.roblox.com/asset/?id=910001910"
+    Animate.swimidle.SwimIdle.AnimationId = "http://www.roblox.com/asset/?id=910030921"
+    Animate.swim.Swim.AnimationId = "http://www.roblox.com/asset/?id=910028158"
+end)
+
+credits:Button("卡通动画包", function()
+    local player = game.Players.LocalPlayer
+    local character = player.Character or player.CharacterAdded:Wait()
+    local Animate = character:WaitForChild("Animate")
+    Animate.idle.Animation1.AnimationId = "http://www.roblox.com/asset/?id=742637544"
+    Animate.idle.Animation2.AnimationId = "http://www.roblox.com/asset/?id=742638445"
+    Animate.walk.WalkAnim.AnimationId = "http://www.roblox.com/asset/?id=742640026"
+    Animate.run.RunAnim.AnimationId = "http://www.roblox.com/asset/?id=742638842"
+    Animate.jump.JumpAnim.AnimationId = "http://www.roblox.com/asset/?id=742637942"
+    Animate.climb.ClimbAnim.AnimationId = "http://www.roblox.com/asset/?id=742636889"
+    Animate.fall.FallAnim.AnimationId = "http://www.roblox.com/asset/?id=742637151"
+end)
+
+credits:Button("长者动画包", function()
+    local player = game.Players.LocalPlayer
+    local character = player.Character or player.CharacterAdded:Wait()
+    local Animate = character:WaitForChild("Animate")
+    Animate.idle.Animation1.AnimationId = "http://www.roblox.com/asset/?id=845397899"
+    Animate.idle.Animation2.AnimationId = "http://www.roblox.com/asset/?id=845400520"
+    Animate.walk.WalkAnim.AnimationId = "http://www.roblox.com/asset/?id=845403856"
+    Animate.run.RunAnim.AnimationId = "http://www.roblox.com/asset/?id=845386501"
+    Animate.jump.JumpAnim.AnimationId = "http://www.roblox.com/asset/?id=845398858"
+    Animate.climb.ClimbAnim.AnimationId = "http://www.roblox.com/asset/?id=845392038"
+    Animate.fall.FallAnim.AnimationId = "http://www.roblox.com/asset/?id=845396048"
+end)
+
+credits:Button("骑士动画包", function()
+    local player = game.Players.LocalPlayer
+    local character = player.Character or player.CharacterAdded:Wait()
+    local Animate = character:WaitForChild("Animate")
+    Animate.idle.Animation1.AnimationId = "http://www.roblox.com/asset/?id=657595757"
+    Animate.idle.Animation2.AnimationId = "http://www.roblox.com/asset/?id=657568135"
+    Animate.walk.WalkAnim.AnimationId = "http://www.roblox.com/asset/?id=657552124"
+    Animate.run.RunAnim.AnimationId = "http://www.roblox.com/asset/?id=657564596"
+    Animate.jump.JumpAnim.AnimationId = "http://www.roblox.com/asset/?id=658409194"
+    Animate.climb.ClimbAnim.AnimationId = "http://www.roblox.com/asset/?id=658360781"
+    Animate.fall.FallAnim.AnimationId = "http://www.roblox.com/asset/?id=657600338"
+end)
+
+credits:Button("悬浮动画包", function()
+    local player = game.Players.LocalPlayer
+    local character = player.Character or player.CharacterAdded:Wait()
+    local Animate = character:WaitForChild("Animate")
+    Animate.idle.Animation1.AnimationId = "http://www.roblox.com/asset/?id=616006778"
+    Animate.idle.Animation2.AnimationId = "http://www.roblox.com/asset/?id=616008087"
+    Animate.walk.WalkAnim.AnimationId = "http://www.roblox.com/asset/?id=616013216"
+    Animate.run.RunAnim.AnimationId = "http://www.roblox.com/asset/?id=616010382"
+    Animate.jump.JumpAnim.AnimationId = "http://www.roblox.com/asset/?id=616008936"
+    Animate.climb.ClimbAnim.AnimationId = "http://www.roblox.com/asset/?id=616003713"
+    Animate.fall.FallAnim.AnimationId = "http://www.roblox.com/asset/?id=616005863"
+end)
+
+credits:Button("法师动画包", function()
+    local player = game.Players.LocalPlayer
+    local character = player.Character or player.CharacterAdded:Wait()
+    local Animate = character:WaitForChild("Animate")
+    Animate.idle.Animation1.AnimationId = "http://www.roblox.com/asset/?id=707742142"
+    Animate.idle.Animation2.AnimationId = "http://www.roblox.com/asset/?id=707855907"
+    Animate.walk.WalkAnim.AnimationId = "http://www.roblox.com/asset/?id=707897309"
+    Animate.run.RunAnim.AnimationId = "http://www.roblox.com/asset/?id=707861613"
+    Animate.jump.JumpAnim.AnimationId = "http://www.roblox.com/asset/?id=707853694"
+    Animate.climb.ClimbAnim.AnimationId = "http://www.roblox.com/asset/?id=707826056"
+    Animate.fall.FallAnim.AnimationId = "http://www.roblox.com/asset/?id=707829716"
+end)
+
+credits:Button("忍者动画包", function()
+    local player = game.Players.LocalPlayer
+    local character = player.Character or player.CharacterAdded:Wait()
+    local Animate = character:WaitForChild("Animate")
+    Animate.idle.Animation1.AnimationId = "http://www.roblox.com/asset/?id=656117400"
+    Animate.idle.Animation2.AnimationId = "http://www.roblox.com/asset/?id=656118341"
+    Animate.walk.WalkAnim.AnimationId = "http://www.roblox.com/asset/?id=656121766"
+    Animate.run.RunAnim.AnimationId = "http://www.roblox.com/asset/?id=656118852"
+    Animate.jump.JumpAnim.AnimationId = "http://www.roblox.com/asset/?id=656117878"
+    Animate.climb.ClimbAnim.AnimationId = "http://www.roblox.com/asset/?id=656114359"
+    Animate.fall.FallAnim.AnimationId = "http://www.roblox.com/asset/?id=656115606"
+end)
+
+credits:Button("海盗动画包", function()
+    local player = game.Players.LocalPlayer
+    local character = player.Character or player.CharacterAdded:Wait()
+    local Animate = character:WaitForChild("Animate")
+    Animate.idle.Animation1.AnimationId = "http://www.roblox.com/asset/?id=750781874"
+    Animate.idle.Animation2.AnimationId = "http://www.roblox.com/asset/?id=750782770"
+    Animate.walk.WalkAnim.AnimationId = "http://www.roblox.com/asset/?id=750785693"
+    Animate.run.RunAnim.AnimationId = "http://www.roblox.com/asset/?id=750783738"
+    Animate.jump.JumpAnim.AnimationId = "http://www.roblox.com/asset/?id=750782230"
+    Animate.climb.ClimbAnim.AnimationId = "http://www.roblox.com/asset/?id=750779899"
+    Animate.fall.FallAnim.AnimationId = "http://www.roblox.com/asset/?id=750780242"
+end)
+
+credits:Button("机器人动画包", function()
+    local player = game.Players.LocalPlayer
+    local character = player.Character or player.CharacterAdded:Wait()
+    local Animate = character:WaitForChild("Animate")
+    Animate.idle.Animation1.AnimationId = "http://www.roblox.com/asset/?id=616088211"
+    Animate.idle.Animation2.AnimationId = "http://www.roblox.com/asset/?id=616089559"
+    Animate.walk.WalkAnim.AnimationId = "http://www.roblox.com/asset/?id=616095330"
+    Animate.run.RunAnim.AnimationId = "http://www.roblox.com/asset/?id=616091570"
+    Animate.jump.JumpAnim.AnimationId = "http://www.roblox.com/asset/?id=616090535"
+    Animate.climb.ClimbAnim.AnimationId = "http://www.roblox.com/asset/?id=616086039"
+    Animate.fall.FallAnim.AnimationId = "http://www.roblox.com/asset/?id=616087089"
+end)
+
+credits:Button("时尚动画包", function()
+    local player = game.Players.LocalPlayer
+    local character = player.Character or player.CharacterAdded:Wait()
+    local Animate = character:WaitForChild("Animate")
+    Animate.idle.Animation1.AnimationId = "http://www.roblox.com/asset/?id=616136790"
+    Animate.idle.Animation2.AnimationId = "http://www.roblox.com/asset/?id=616138447"
+    Animate.walk.WalkAnim.AnimationId = "http://www.roblox.com/asset/?id=616146177"
+    Animate.run.RunAnim.AnimationId = "http://www.roblox.com/asset/?id=616140816"
+    Animate.jump.JumpAnim.AnimationId = "http://www.roblox.com/asset/?id=616139451"
+    Animate.climb.ClimbAnim.AnimationId = "http://www.roblox.com/asset/?id=616133594"
+    Animate.fall.FallAnim.AnimationId = "http://www.roblox.com/asset/?id=616134815"
+end)
+
+credits:Button("超级英雄动画包", function()
+    local player = game.Players.LocalPlayer
+    local character = player.Character or player.CharacterAdded:Wait()
+    local Animate = character:WaitForChild("Animate")
+    Animate.idle.Animation1.AnimationId = "http://www.roblox.com/asset/?id=616111295"
+    Animate.idle.Animation2.AnimationId = "http://www.roblox.com/asset/?id=616113536"
+    Animate.walk.WalkAnim.AnimationId = "http://www.roblox.com/asset/?id=616122287"
+    Animate.run.RunAnim.AnimationId = "http://www.roblox.com/asset/?id=616117076"
+    Animate.jump.JumpAnim.AnimationId = "http://www.roblox.com/asset/?id=616115533"
+    Animate.climb.ClimbAnim.AnimationId = "http://www.roblox.com/asset/?id=616104706"
+    Animate.fall.FallAnim.AnimationId = "http://www.roblox.com/asset/?id=616108001"
+end)
+
+credits:Button("玩具动画包", function()
+    local player = game.Players.LocalPlayer
+    local character = player.Character or player.CharacterAdded:Wait()
+    local Animate = character:WaitForChild("Animate")
+    Animate.idle.Animation1.AnimationId = "http://www.roblox.com/asset/?id=782841498"
+    Animate.idle.Animation2.AnimationId = "http://www.roblox.com/asset/?id=782845736"
+    Animate.walk.WalkAnim.AnimationId = "http://www.roblox.com/asset/?id=782843345"
+    Animate.run.RunAnim.AnimationId = "http://www.roblox.com/asset/?id=782842708"
+    Animate.jump.JumpAnim.AnimationId = "http://www.roblox.com/asset/?id=782847020"
+    Animate.climb.ClimbAnim.AnimationId = "http://www.roblox.com/asset/?id=782843869"
+    Animate.fall.FallAnim.AnimationId = "http://www.roblox.com/asset/?id=782846423"
+end)
+
+credits:Button("狼人动画包", function()
+    local player = game.Players.LocalPlayer
+    local character = player.Character or player.CharacterAdded:Wait()
+    local Animate = character:WaitForChild("Animate")
+    Animate.idle.Animation1.AnimationId = "http://www.roblox.com/asset/?id=1083195517"
+    Animate.idle.Animation2.AnimationId = "http://www.roblox.com/asset/?id=1083214717"
+    Animate.walk.WalkAnim.AnimationId = "http://www.roblox.com/asset/?id=1083178339"
+    Animate.run.RunAnim.AnimationId = "http://www.roblox.com/asset/?id=1083216690"
+    Animate.jump.JumpAnim.AnimationId = "http://www.roblox.com/asset/?id=1083218792"
+    Animate.climb.ClimbAnim.AnimationId = "http://www.roblox.com/asset/?id=1083182000"
+    Animate.fall.FallAnim.AnimationId = "http://www.roblox.com/asset/?id=1083189019"
+end)
+
+credits:Button("僵尸动画包", function()
+    local player = game.Players.LocalPlayer
+    local character = player.Character or player.CharacterAdded:Wait()
+    local Animate = character:WaitForChild("Animate")
+    Animate.idle.Animation1.AnimationId = "http://www.roblox.com/asset/?id=616158929"
+    Animate.idle.Animation2.AnimationId = "http://www.roblox.com/asset/?id=616160636"
+    Animate.walk.WalkAnim.AnimationId = "http://www.roblox.com/asset/?id=616168032"
+    Animate.run.RunAnim.AnimationId = "http://www.roblox.com/asset/?id=616163682"
+    Animate.jump.JumpAnim.AnimationId = "http://www.roblox.com/asset/?id=616161997"
+    Animate.climb.ClimbAnim.AnimationId = "http://www.roblox.com/asset/?id=616156119"
+    Animate.fall.FallAnim.AnimationId = "http://www.roblox.com/asset/?id=616157476"
+end)
+
+credits:Button("巡逻动画包", function()
+    local player = game.Players.LocalPlayer
+    local character = player.Character or player.CharacterAdded:Wait()
+    local Animate = character:WaitForChild("Animate")
+    Animate.idle.Animation1.AnimationId = "http://www.roblox.com/asset/?id=1149612882"
+    Animate.idle.Animation2.AnimationId = "http://www.roblox.com/asset/?id=1150842221"
+    Animate.walk.WalkAnim.AnimationId = "http://www.roblox.com/asset/?id=1151231493"
+    Animate.run.RunAnim.AnimationId = "http://www.roblox.com/asset/?id=1150967949"
+    Animate.jump.JumpAnim.AnimationId = "http://www.roblox.com/asset/?id=1148811837"
+    Animate.climb.ClimbAnim.AnimationId = "http://www.roblox.com/asset/?id=1148811837"
+    Animate.fall.FallAnim.AnimationId = "http://www.roblox.com/asset/?id=1148863382"
+end)
+
+credits:Button("自信动画包", function()
+    local player = game.Players.LocalPlayer
+    local character = player.Character or player.CharacterAdded:Wait()
+    local Animate = character:WaitForChild("Animate")
+    Animate.idle.Animation1.AnimationId = "http://www.roblox.com/asset/?id=1069977950"
+    Animate.idle.Animation2.AnimationId = "http://www.roblox.com/asset/?id=1069987858"
+    Animate.walk.WalkAnim.AnimationId = "http://www.roblox.com/asset/?id=1070017263"
+    Animate.run.RunAnim.AnimationId = "http://www.roblox.com/asset/?id=1070001516"
+    Animate.jump.JumpAnim.AnimationId = "http://www.roblox.com/asset/?id=1069984524"
+    Animate.climb.ClimbAnim.AnimationId = "http://www.roblox.com/asset/?id=1069946257"
+    Animate.fall.FallAnim.AnimationId = "http://www.roblox.com/asset/?id=1069973677"
+end)
+
+credits:Button("流行明星动画包", function()
+    local player = game.Players.LocalPlayer
+    local character = player.Character or player.CharacterAdded:Wait()
+    local Animate = character:WaitForChild("Animate")
+    Animate.idle.Animation1.AnimationId = "http://www.roblox.com/asset/?id=1212900985"
+    Animate.idle.Animation2.AnimationId = "http://www.roblox.com/asset/?id=1150842221"
+    Animate.walk.WalkAnim.AnimationId = "http://www.roblox.com/asset/?id=1212980338"
+    Animate.run.RunAnim.AnimationId = "http://www.roblox.com/asset/?id=1212980348"
+    Animate.jump.JumpAnim.AnimationId = "http://www.roblox.com/asset/?id=1212954642"
+    Animate.climb.ClimbAnim.AnimationId = "http://www.roblox.com/asset/?id=1213044953"
+    Animate.fall.FallAnim.AnimationId = "http://www.roblox.com/asset/?id=1212900995"
+end)
+
+credits:Button("牛仔动画包", function()
+    local player = game.Players.LocalPlayer
+    local character = player.Character or player.CharacterAdded:Wait()
+    local Animate = character:WaitForChild("Animate")
+    Animate.idle.Animation1.AnimationId = "http://www.roblox.com/asset/?id=1014390418"
+    Animate.idle.Animation2.AnimationId = "http://www.roblox.com/asset/?id=1014398616"
+    Animate.walk.WalkAnim.AnimationId = "http://www.roblox.com/asset/?id=1014421541"
+    Animate.run.RunAnim.AnimationId = "http://www.roblox.com/asset/?id=1014401683"
+    Animate.jump.JumpAnim.AnimationId = "http://www.roblox.com/asset/?id=1014394726"
+    Animate.climb.ClimbAnim.AnimationId = "http://www.roblox.com/asset/?id=1014380606"
+    Animate.fall.FallAnim.AnimationId = "http://www.roblox.com/asset/?id=1014384571"
+end)
+
+credits:Button("幽灵动画包", function()
+    local player = game.Players.LocalPlayer
+    local character = player.Character or player.CharacterAdded:Wait()
+    local Animate = character:WaitForChild("Animate")
+    Animate.idle.Animation1.AnimationId = "http://www.roblox.com/asset/?id=616006778"
+    Animate.idle.Animation2.AnimationId = "http://www.roblox.com/asset/?id=616008087"
+    Animate.walk.WalkAnim.AnimationId = "http://www.roblox.com/asset/?id=616013216"
+    Animate.run.RunAnim.AnimationId = "http://www.roblox.com/asset/?id=616013216"
+    Animate.jump.JumpAnim.AnimationId = "http://www.roblox.com/asset/?id=616008936"
+    Animate.fall.FallAnim.AnimationId = "http://www.roblox.com/asset/?id=616005863"
+    Animate.swimidle.SwimIdle.AnimationId = "http://www.roblox.com/asset/?id=616012453"
+    Animate.swim.Swim.AnimationId = "http://www.roblox.com/asset/?id=616011509"
+end)
+
+credits:Button("鬼鬼祟祟动画包", function()
+    local player = game.Players.LocalPlayer
+    local character = player.Character or player.CharacterAdded:Wait()
+    local Animate = character:WaitForChild("Animate")
+    Animate.idle.Animation1.AnimationId = "http://www.roblox.com/asset/?id=1132473842"
+    Animate.idle.Animation2.AnimationId = "http://www.roblox.com/asset/?id=1132477671"
+    Animate.walk.WalkAnim.AnimationId = "http://www.roblox.com/asset/?id=1132510133"
+    Animate.run.RunAnim.AnimationId = "http://www.roblox.com/asset/?id=1132494274"
+    Animate.jump.JumpAnim.AnimationId = "http://www.roblox.com/asset/?id=1132489853"
+    Animate.climb.ClimbAnim.AnimationId = "http://www.roblox.com/asset/?id=1132461372"
+    Animate.fall.FallAnim.AnimationId = "http://www.roblox.com/asset/?id=1132469004"
+end)
+
+credits:Button("公主动画包", function()
+    local player = game.Players.LocalPlayer
+    local character = player.Character or player.CharacterAdded:Wait()
+    local Animate = character:WaitForChild("Animate")
+    Animate.idle.Animation1.AnimationId = "http://www.roblox.com/asset/?id=941003647"
+    Animate.idle.Animation2.AnimationId = "http://www.roblox.com/asset/?id=941013098"
+    Animate.walk.WalkAnim.AnimationId = "http://www.roblox.com/asset/?id=941028902"
+    Animate.run.RunAnim.AnimationId = "http://www.roblox.com/asset/?id=941015281"
+    Animate.jump.JumpAnim.AnimationId = "http://www.roblox.com/asset/?id=941008832"
+    Animate.climb.ClimbAnim.AnimationId = "http://www.roblox.com/asset/?id=940996062"
+    Animate.fall.FallAnim.AnimationId = "http://www.roblox.com/asset/?id=941000007"
+end)
+
+credits:Button("阿迪达斯运动动画包", function()
+    local player = game.Players.LocalPlayer
+    local character = player.Character or player.CharacterAdded:Wait()
+    local Animate = character:WaitForChild("Animate")
+    Animate.idle.Animation1.AnimationId = "http://www.roblox.com/asset/?id=18537376492"
+    Animate.idle.Animation2.AnimationId = "http://www.roblox.com/asset/?id=18537371272"
+    Animate.walk.WalkAnim.AnimationId = "http://www.roblox.com/asset/?id=18537392113"
+    Animate.run.RunAnim.AnimationId = "http://www.roblox.com/asset/?id=18537384940"
+    Animate.jump.JumpAnim.AnimationId = "http://www.roblox.com/asset/?id=18537380791"
+    Animate.climb.ClimbAnim.AnimationId = "http://www.roblox.com/asset/?id=18537363391"
+    Animate.fall.FallAnim.AnimationId = "http://www.roblox.com/asset/?id=18537367238"
+end)
+
+credits:Button("超级流行动画包", function()
+    local player = game.Players.LocalPlayer
+    local character = player.Character or player.CharacterAdded:Wait()
+    local Animate = character:WaitForChild("Animate")
+    Animate.idle.Animation1.AnimationId = "http://www.roblox.com/asset/?id=118832222982049"
+    Animate.idle.Animation2.AnimationId = "http://www.roblox.com/asset/?id=76049494037641"
+    Animate.walk.WalkAnim.AnimationId = "http://www.roblox.com/asset/?id=92072849924640"
+    Animate.run.RunAnim.AnimationId = "http://www.roblox.com/asset/?id=72301599441680"
+    Animate.jump.JumpAnim.AnimationId = "http://www.roblox.com/asset/?id=104325245285198"
+    Animate.climb.ClimbAnim.AnimationId = "http://www.roblox.com/asset/?id=131326830509784"
+    Animate.fall.FallAnim.AnimationId = "http://www.roblox.com/asset/?id=121152442762481"
+end)
+
+credits:Button("美国国家橄榄球联盟动画包", function()
+    local player = game.Players.LocalPlayer
+    local character = player.Character or player.CharacterAdded:Wait()
+    local Animate = character:WaitForChild("Animate")
+    Animate.idle.Animation1.AnimationId = "http://www.roblox.com/asset/?id=92080889861410"
+    Animate.idle.Animation2.AnimationId = "http://www.roblox.com/asset/?id=74451233229259"
+    Animate.walk.WalkAnim.AnimationId = "http://www.roblox.com/asset/?id=110358958299415"
+    Animate.run.RunAnim.AnimationId = "http://www.roblox.com/asset/?id=117333533048078"
+    Animate.jump.JumpAnim.AnimationId = "http://www.roblox.com/asset/?id=119846112151352"
+    Animate.climb.ClimbAnim.AnimationId = "http://www.roblox.com/asset/?id=134630013742019"
+    Animate.fall.FallAnim.AnimationId = "http://www.roblox.com/asset/?id=129773241321032"
+end)
+
+credits:Button("大胆动画包", function()
+    local player = game.Players.LocalPlayer
+    local character = player.Character or player.CharacterAdded:Wait()
+    local Animate = character:WaitForChild("Animate")
+    Animate.idle.Animation1.AnimationId = "http://www.roblox.com/asset/?id=16738333868"
+    Animate.idle.Animation2.AnimationId = "http://www.roblox.com/asset/?id=16738334710"
+    Animate.walk.WalkAnim.AnimationId = "http://www.roblox.com/asset/?id=16738340646"
+    Animate.run.RunAnim.AnimationId = "http://www.roblox.com/asset/?id=16738337225"
+    Animate.jump.JumpAnim.AnimationId = "http://www.roblox.com/asset/?id=16738336650"
+    Animate.climb.ClimbAnim.AnimationId = "http://www.roblox.com/asset/?id=16738332169"
+    Animate.fall.FallAnim.AnimationId = "http://www.roblox.com/asset/?id=16738333171"
+end)
+
+credits:Button("无界限动画包", function()
+    local player = game.Players.LocalPlayer
+    local character = player.Character or player.CharacterAdded:Wait()
+    local Animate = character:WaitForChild("Animate")
+    Animate.idle.Animation1.AnimationId = "http://www.roblox.com/asset/?id=18747067405"
+    Animate.idle.Animation2.AnimationId = "http://www.roblox.com/asset/?id=18747063918"
+    Animate.walk.WalkAnim.AnimationId = "http://www.roblox.com/asset/?id=18747074203"
+    Animate.run.RunAnim.AnimationId = "http://www.roblox.com/asset/?id=18747070484"
+    Animate.jump.JumpAnim.AnimationId = "http://www.roblox.com/asset/?id=18747069148"
+    Animate.climb.ClimbAnim.AnimationId = "http://www.roblox.com/asset/?id=18747060903"
+    Animate.fall.FallAnim.AnimationId = "http://www.roblox.com/asset/?id=18747062535"
+end)
+
+credits:Button("复古动画包", function()
+    local player = game.Players.LocalPlayer
+    local character = player.Character or player.CharacterAdded:Wait()
+    local Animate = character:WaitForChild("Animate")
+    Animate.idle.Animation1.AnimationId = "http://www.roblox.com/asset/?id=10921230744"
+    Animate.idle.Animation2.AnimationId = "http://www.roblox.com/asset/?id=10921232093"
+    Animate.walk.WalkAnim.AnimationId = "http://www.roblox.com/asset/?id=10921244891"
+    Animate.run.RunAnim.AnimationId = "http://www.roblox.com/asset/?id=10921240218"
+    Animate.jump.JumpAnim.AnimationId = "http://www.roblox.com/asset/?id=10921242013"
+    Animate.climb.ClimbAnim.AnimationId = "http://www.roblox.com/asset/?id=10921229866"
+    Animate.fall.FallAnim.AnimationId = "http://www.roblox.com/asset/?id=10921241244"
+end)
+
+credits:Button("猫步魅力动画包", function()
+    local player = game.Players.LocalPlayer
+    local character = player.Character or player.CharacterAdded:Wait()
+    local Animate = character:WaitForChild("Animate")
+    Animate.idle.Animation1.AnimationId = "http://www.roblox.com/asset/?id=119377220967554"
+    Animate.idle.Animation2.AnimationId = "http://www.roblox.com/asset/?id=94970088341563"
+    Animate.walk.WalkAnim.AnimationId = "http://www.roblox.com/asset/?id=109168724482748"
+    Animate.run.RunAnim.AnimationId = "http://www.roblox.com/asset/?id=81024476153754"
+    Animate.jump.JumpAnim.AnimationId = "http://www.roblox.com/asset/?id=116936326516985"
+    Animate.climb.ClimbAnim.AnimationId = "http://www.roblox.com/asset/?id=119377220967554"
+    Animate.fall.FallAnim.AnimationId = "http://www.roblox.com/asset/?id=92294537340807"
+end)
+
+credits:Button("风格化女性动画包", function()
+    local player = game.Players.LocalPlayer
+    local character = player.Character or player.CharacterAdded:Wait()
+    local Animate = character:WaitForChild("Animate")
+    Animate.idle.Animation1.AnimationId = "http://www.roblox.com/asset/?id=4708192150"
+    Animate.idle.Animation2.AnimationId = "http://www.roblox.com/asset/?id=4708191566"
+    Animate.walk.WalkAnim.AnimationId = "http://www.roblox.com/asset/?id=4708193840"
+    Animate.run.RunAnim.AnimationId = "http://www.roblox.com/asset/?id=4708192705"
+    Animate.jump.JumpAnim.AnimationId = "http://www.roblox.com/asset/?id=4708188025"
+    Animate.climb.ClimbAnim.AnimationId = "http://www.roblox.com/asset/?id=4708184253"
+    Animate.fall.FallAnim.AnimationId = "http://www.roblox.com/asset/?id=4708186162"
+end)
+
+credits:Button("写实动画包", function()
+    local player = game.Players.LocalPlayer
+    local character = player.Character or player.CharacterAdded:Wait()
+    local Animate = character:WaitForChild("Animate")
+    Animate.idle.Animation1.AnimationId = "http://www.roblox.com/asset/?id=17173014241"
+    Animate.idle.Animation2.AnimationId = "http://www.roblox.com/asset/?id=17172918855"
+    Animate.walk.WalkAnim.AnimationId = "http://www.roblox.com/asset/?id=11600249883"
+    Animate.run.RunAnim.AnimationId = "http://www.roblox.com/asset/?id=11600211410"
+    Animate.jump.JumpAnim.AnimationId = "http://www.roblox.com/asset/?id=11600210487"
+    Animate.climb.ClimbAnim.AnimationId = "http://www.roblox.com/asset/?id=11600205519"
+    Animate.fall.FallAnim.AnimationId = "http://www.roblox.com/asset/?id=11600206437"
+end)
+
+credits:Button("厕所先生动画包", function()
+    local player = game.Players.LocalPlayer
+    local character = player.Character or player.CharacterAdded:Wait()
+    local Animate = character:WaitForChild("Animate")
+    Animate.idle.Animation1.AnimationId = "http://www.roblox.com/asset/?id=4417978624"
+    Animate.idle.Animation2.AnimationId = "http://www.roblox.com/asset/?id=4417977954"
+    Animate.walk.WalkAnim.AnimationId = "http://www.roblox.com/asset/?id=10921269718"
+    Animate.run.RunAnim.AnimationId = "http://www.roblox.com/asset/?id=4417979645"
+    Animate.jump.JumpAnim.AnimationId = "http://www.roblox.com/asset/?id=10921263860"
+    Animate.climb.ClimbAnim.AnimationId = "http://www.roblox.com/asset/?id=10921257536"
+    Animate.fall.FallAnim.AnimationId = "http://www.roblox.com/asset/?id=10921262864"
+end)
+
+credits:Button("Rthro风格动画包", function()
+    local player = game.Players.LocalPlayer
+    local character = player.Character or player.CharacterAdded:Wait()
+    local Animate = character:WaitForChild("Animate")
+    Animate.idle.Animation1.AnimationId = "http://www.roblox.com/asset/?id=10921258489"
+    Animate.idle.Animation2.AnimationId = "http://www.roblox.com/asset/?id=10921259953"
+    Animate.walk.WalkAnim.AnimationId = "http://www.roblox.com/asset/?id=10921269718"
+    Animate.run.RunAnim.AnimationId = "http://www.roblox.com/asset/?id=10921261968"
+    Animate.jump.JumpAnim.AnimationId = "http://www.roblox.com/asset/?id=10921263860"
+    Animate.climb.ClimbAnim.AnimationId = "http://www.roblox.com/asset/?id=10921257536"
+    Animate.fall.FallAnim.AnimationId = "http://www.roblox.com/asset/?id=10921262864"
+end)
+
+credits:Button("默认动画包", function()
+    local player = game.Players.LocalPlayer
+    local character = player.Character or player.CharacterAdded:Wait()
+    local Animate = character:WaitForChild("Animate")
+    Animate.idle.Animation1.AnimationId = "http://www.roblox.com/asset/?id=507766666"
+    Animate.idle.Animation2.AnimationId = "http://www.roblox.com/asset/?id=507766388"
+    Animate.walk.WalkAnim.AnimationId = "http://www.roblox.com/asset/?id=913402848"
+    Animate.run.RunAnim.AnimationId = "http://www.roblox.com/asset/?id=913376220"
+    Animate.jump.JumpAnim.AnimationId = "http://www.roblox.com/asset/?id=507765000"
+    Animate.climb.ClimbAnim.AnimationId = "http://www.roblox.com/asset/?id=507765644"
+    Animate.fall.FallAnim.AnimationId = "http://www.roblox.com/asset/?id=507767968"
+end)
+
+credits:Button("小偷动画包", function()
+    local player = game.Players.LocalPlayer
+    local character = player.Character or player.CharacterAdded:Wait()
+    local Animate = character:WaitForChild("Animate")
+    Animate.idle.Animation1.AnimationId = "http://www.roblox.com/asset/?id=1132473842"
+    Animate.idle.Animation2.AnimationId = "http://www.roblox.com/asset/?id=1132477671"
+    Animate.walk.WalkAnim.AnimationId = "http://www.roblox.com/asset/?id=1132510133"
+    Animate.run.RunAnim.AnimationId = "http://www.roblox.com/asset/?id=1132494274"
+    Animate.jump.JumpAnim.AnimationId = "http://www.roblox.com/asset/?id=1132489853"
+    Animate.climb.ClimbAnim.AnimationId = "http://www.roblox.com/asset/?id=1132461372"
+    Animate.fall.FallAnim.AnimationId = "http://www.roblox.com/asset/?id=1132469004"
+end)
+
+credits:Button("鬼动画包", function()
+    local player = game.Players.LocalPlayer
+    local character = player.Character or player.CharacterAdded:Wait()
+    local Animate = character:WaitForChild("Animate")
+    Animate.idle.Animation1.AnimationId = "http://www.roblox.com/asset/?id=616006778"
+    Animate.idle.Animation2.AnimationId = "http://www.roblox.com/asset/?id=616008087"
+    Animate.walk.WalkAnim.AnimationId = "http://www.roblox.com/asset/?id=616013216"
+    Animate.run.RunAnim.AnimationId = "http://www.roblox.com/asset/?id=616013216"
+    Animate.jump.JumpAnim.AnimationId = "http://www.roblox.com/asset/?id=616008936"
+    Animate.fall.FallAnim.AnimationId = "http://www.roblox.com/asset/?id=616005863"
+    Animate.swimidle.SwimIdle.AnimationId = "http://www.roblox.com/asset/?id=616012453"
+    Animate.swim.Swim.AnimationId = "http://www.roblox.com/asset/?id=616011509"
+end)
+
+credits:Button("没有动画包", function()
+    local player = game.Players.LocalPlayer
+    local character = player.Character or player.CharacterAdded:Wait()
+    local Animate = character:WaitForChild("Animate")
+    Animate.idle.Animation1.AnimationId = "http://www.roblox.com/asset/?id=0"
+    Animate.idle.Animation2.AnimationId = "http://www.roblox.com/asset/?id=0"
+    Animate.walk.WalkAnim.AnimationId = "http://www.roblox.com/asset/?id=0"
+    Animate.run.RunAnim.AnimationId = "http://www.roblox.com/asset/?id=0"
+    Animate.jump.JumpAnim.AnimationId = "http://www.roblox.com/asset/?id=0"
+    Animate.climb.ClimbAnim.AnimationId = "http://www.roblox.com/asset/?id=0"
+    Animate.fall.FallAnim.AnimationId = "http://www.roblox.com/asset/?id=0"
+    Animate.swimidle.SwimIdle.AnimationId = "http://www.roblox.com/asset/?id=0"
+    Animate.swim.Swim.AnimationId = "http://www.roblox.com/asset/?id=0"
+end)
+
+credits:Button("丧尸动画包", function()
+    local player = game.Players.LocalPlayer
+    local character = player.Character or player.CharacterAdded:Wait()
+    local Animate = character:WaitForChild("Animate")
+    Animate.idle.Animation1.AnimationId = "http://www.roblox.com/asset/?id=3489171152"
+    Animate.walk.WalkAnim.AnimationId = "http://www.roblox.com/asset/?id=3489174223"
+    Animate.run.RunAnim.AnimationId = "http://www.roblox.com/asset/?id=3489173414"
+    Animate.jump.JumpAnim.AnimationId = "http://www.roblox.com/asset/?id=616161997"
+    Animate.fall.FallAnim.AnimationId = "http://www.roblox.com/asset/?id=616157476"
+    Animate.climb.ClimbAnim.AnimationId = "http://www.roblox.com/asset/?id=616156119"
+end)
+
+credits:Button("嚣张动画包", function()
+    local player = game.Players.LocalPlayer
+    local character = player.Character or player.CharacterAdded:Wait()
+    local Animate = character:WaitForChild("Animate")
+    Animate.idle.Animation1.AnimationId = "http://www.roblox.com/asset/?id=1149612882"
+    Animate.idle.Animation2.AnimationId = "http://www.roblox.com/asset/?id=1150842221"
+    Animate.walk.WalkAnim.AnimationId = "http://www.roblox.com/asset/?id=1151231493"
+    Animate.run.RunAnim.AnimationId = "http://www.roblox.com/asset/?id=1150967949"
+    Animate.jump.JumpAnim.AnimationId = "http://www.roblox.com/asset/?id=1148811837"
+    Animate.climb.ClimbAnim.AnimationId = "http://www.roblox.com/asset/?id=1148811837"
+    Animate.fall.FallAnim.AnimationId = "http://www.roblox.com/asset/?id=1148863382"
+end)
+
+local creds = window:Tab("自然灾害模拟器", "6031097229")
+local credits = creds:section("自然灾害模拟器", false)
+
+credits:Label("雪崩预测不了")
+credits:Label("病毒不知道")
+credits:Button("在聊天栏输入下一个灾难", function()
+    local Players = game:GetService("Players")
+    local TextChatService = game:GetService("TextChatService")
+    local plr = Players.LocalPlayer
+
+    nextdis = true
+    local lastDisaster = nil
+
+    while wait(1) and nextdis do
+        local SurvivalTag = plr.Character:FindFirstChild("SurvivalTag")
+        
+        if SurvivalTag then
+            local disasterMessages = {
+                Blizzard = "暴风雪",
+                Sandstorm = "沙尘暴",
+                Tornado = "龙卷风",
+                ["Volcanic Eruption"] = "火山",
+                ["Flash Flood"] = "洪水",
+                ["Deadly Virus"] = "病毒",
+                Tsunami = "海啸",
+                ["Acid Rain"] = "酸雨",
+                Fire = "火焰",
+                ["Meteor Shower"] = "流星雨",
+                Earthquake = "地震",
+                ["Thunder Storm"] = "暴风雨"
+            }
+            
+            local currentDisaster = SurvivalTag.Value
+            local disasterName = disasterMessages[currentDisaster]
+            
+            if disasterName and currentDisaster ~= lastDisaster and nextdis then
+                TextChatService.TextChannels.RBXGeneral:SendAsync("下一个灾难是：" .. disasterName)
+                lastDisaster = currentDisaster
+            end
+        end
+    end
+end)
+
+credits:Button("免去坠落伤害", function()
+    local runsvc = game:GetService("RunService")
+    local heartbeat = runsvc.Heartbeat
+    local rstepped = runsvc.RenderStepped
+
+    local lp = game:GetService("Players").LocalPlayer
+
+    local novel = Vector3.zero
+
+    local function nofalldamage(chr)
+        local root = chr:WaitForChild("HumanoidRootPart")
+        
+        if root then
+            local con
+            con = heartbeat:Connect(function()
+                if not root.Parent then
+                    con:Disconnect()
+                end
+                
+                local oldvel = root.AssemblyLinearVelocity
+                root.AssemblyLinearVelocity = novel
+                
+                rstepped:Wait()
+                root.AssemblyLinearVelocity = oldvel
+            end)
+        end
+    end
+
+    if lp.Character then
+        nofalldamage(lp.Character)
+    end
+
+    lp.CharacterAdded:Connect(nofalldamage)
+end)
+
+credits:Toggle("游戏岛悬崖碰撞", "Togglelnfo", false, function(bool)
+    for i, v in pairs(game.workspace:GetDescendants()) do
+        if v.Name == 'LowerRocks' then
+            v.CanCollide = bool
+        end
+    end
+end)
+
+credits:Toggle("在水上行走", "ToggleInfo", false, function(bool)
+    if bool == false then 
+        game.Workspace.WaterLevel.CanCollide = false
+        game.Workspace.WaterLevel.Size = Vector3.new(10, 1, 10)
+    end
+    
+    if bool == true then 
+        game.Workspace.WaterLevel.CanCollide = true
+        game.Workspace.WaterLevel.Size = Vector3.new(5000, 1, 5000)
+    end
+end)
+
+local credits = creds:section("黑洞脚本", false)
+
+credits:Button("环绕黑洞脚本v3", function()
+loadstring(game:HttpGet("https://rawscripts.net/raw/Universal-Script-Projeto-LKB-I-Super-Ring-V3-I-Cracked-23346"))()
+end)
+
+credits:Button("环绕黑洞脚本v4", function()
+loadstring(game:HttpGet("https://rawscripts.net/raw/Natural-Disaster-Survival-Super-ring-V4-24296"))()
+end)
+
+credits:Button("环绕黑洞脚本v6", function()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/bluer0455/SAR_SangRui/refs/heads/main/SARBCDEFGMIAOMiAO"))()
+end)
+
+updatePlayerAttributes()
