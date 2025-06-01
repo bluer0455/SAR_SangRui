@@ -1,0 +1,500 @@
+-- Gui to Lua
+-- Version: 3.2 (汉化增强版)
+
+-- 实例化
+local Gui = Instance.new("ScreenGui")
+local Main = Instance.new("Frame")
+local Box = Instance.new("TextBox")
+local UITextSizeConstraint = Instance.new("UITextSizeConstraint")
+local Label = Instance.new("TextLabel")
+local UITextSizeConstraint_2 = Instance.new("UITextSizeConstraint")
+local Button = Instance.new("TextButton")
+local UITextSizeConstraint_3 = Instance.new("UITextSizeConstraint")
+local PlayerListButton = Instance.new("TextButton")
+local UITextSizeConstraint_4 = Instance.new("UITextSizeConstraint")
+
+-- 玩家列表GUI
+local PlayerListGui = Instance.new("Frame")
+local PlayerListLabel = Instance.new("TextLabel")
+local PlayerListScrollFrame = Instance.new("ScrollingFrame")
+local UIListLayout = Instance.new("UIListLayout")
+local CloseButton = Instance.new("TextButton")
+
+-- 属性设置:
+Gui.Name = "零件传送器"
+Gui.Parent = game:GetService("CoreGui") or gethui()
+Gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+
+Main.Name = "主界面"
+Main.Parent = Gui
+Main.BackgroundColor3 = Color3.fromRGB(45, 45, 55)
+Main.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Main.BorderSizePixel = 0
+Main.Position = UDim2.new(0.335954279, 0, 0.542361975, 0)
+Main.Size = UDim2.new(0.280350261, 0, 0.220880623, 0)
+Main.Active = true
+Main.Draggable = true
+
+-- 添加圆角和阴影效果
+local MainCorner = Instance.new("UICorner")
+MainCorner.CornerRadius = UDim.new(0, 12)
+MainCorner.Parent = Main
+
+local MainStroke = Instance.new("UIStroke")
+MainStroke.Color = Color3.fromRGB(100, 100, 120)
+MainStroke.Thickness = 2
+MainStroke.Parent = Main
+
+Box.Name = "玩家输入框"
+Box.Parent = Main
+Box.BackgroundColor3 = Color3.fromRGB(65, 65, 75)
+Box.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Box.BorderSizePixel = 0
+Box.Position = UDim2.new(0.0780926454, 0, 0.25, 0)
+Box.Size = UDim2.new(0.65, 0, 0.22, 0)
+Box.FontFace = Font.new("rbxasset://fonts/families/SourceSansSemibold.json", Enum.FontWeight.Bold, Enum.FontStyle.Normal)
+Box.PlaceholderText = "输入玩家名称"
+Box.Text = ""
+Box.TextColor3 = Color3.fromRGB(255, 255, 255)
+Box.TextScaled = true
+Box.TextSize = 31.000
+Box.TextWrapped = true
+
+local BoxCorner = Instance.new("UICorner")
+BoxCorner.CornerRadius = UDim.new(0, 8)
+BoxCorner.Parent = Box
+
+UITextSizeConstraint.Parent = Box
+UITextSizeConstraint.MaxTextSize = 31
+
+Label.Name = "标题"
+Label.Parent = Main
+Label.BackgroundColor3 = Color3.fromRGB(35, 35, 45)
+Label.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Label.BorderSizePixel = 0
+Label.Position = UDim2.new(0, 0, 0, 0)
+Label.Size = UDim2.new(1, 0, 0.18, 0)
+Label.FontFace = Font.new("rbxasset://fonts/families/Nunito.json", Enum.FontWeight.Bold, Enum.FontStyle.Normal)
+Label.Text = "零件传送工具 | 高级版"
+Label.TextColor3 = Color3.fromRGB(255, 255, 255)
+Label.TextScaled = true
+Label.TextSize = 14.000
+Label.TextWrapped = true
+
+local LabelCorner = Instance.new("UICorner")
+LabelCorner.CornerRadius = UDim.new(0, 12)
+LabelCorner.Parent = Label
+
+UITextSizeConstraint_2.Parent = Label
+UITextSizeConstraint_2.MaxTextSize = 21
+
+Button.Name = "传送按钮"
+Button.Parent = Main
+Button.BackgroundColor3 = Color3.fromRGB(80, 120, 200)
+Button.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Button.BorderSizePixel = 0
+Button.Position = UDim2.new(0.08, 0, 0.55, 0)
+Button.Size = UDim2.new(0.84, 0, 0.25, 0)
+Button.Font = Enum.Font.Nunito
+Button.Text = "传送零件 | 关闭"
+Button.TextColor3 = Color3.fromRGB(255, 255, 255)
+Button.TextScaled = true
+Button.TextSize = 28.000
+Button.TextWrapped = true
+
+local ButtonCorner = Instance.new("UICorner")
+ButtonCorner.CornerRadius = UDim.new(0, 8)
+ButtonCorner.Parent = Button
+
+UITextSizeConstraint_3.Parent = Button
+UITextSizeConstraint_3.MaxTextSize = 28
+
+-- 玩家列表按钮
+PlayerListButton.Name = "玩家列表按钮"
+PlayerListButton.Parent = Main
+PlayerListButton.BackgroundColor3 = Color3.fromRGB(100, 200, 100)
+PlayerListButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
+PlayerListButton.BorderSizePixel = 0
+PlayerListButton.Position = UDim2.new(0.75, 0, 0.25, 0)
+PlayerListButton.Size = UDim2.new(0.17, 0, 0.22, 0)
+PlayerListButton.Font = Enum.Font.Nunito
+PlayerListButton.Text = "+"
+PlayerListButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+PlayerListButton.TextScaled = true
+PlayerListButton.TextSize = 28.000
+PlayerListButton.TextWrapped = true
+
+local PlayerListButtonCorner = Instance.new("UICorner")
+PlayerListButtonCorner.CornerRadius = UDim.new(0, 8)
+PlayerListButtonCorner.Parent = PlayerListButton
+
+UITextSizeConstraint_4.Parent = PlayerListButton
+UITextSizeConstraint_4.MaxTextSize = 28
+
+-- 玩家列表GUI设置
+PlayerListGui.Name = "玩家列表界面"
+PlayerListGui.Parent = Gui
+PlayerListGui.BackgroundColor3 = Color3.fromRGB(35, 35, 45)
+PlayerListGui.BorderColor3 = Color3.fromRGB(100, 100, 120)
+PlayerListGui.BorderSizePixel = 2
+PlayerListGui.Position = UDim2.new(0.3, 0, 0.2, 0)
+PlayerListGui.Size = UDim2.new(0.4, 0, 0.6, 0)
+PlayerListGui.Visible = false
+PlayerListGui.Active = true
+PlayerListGui.Draggable = true
+
+local PlayerListGuiCorner = Instance.new("UICorner")
+PlayerListGuiCorner.CornerRadius = UDim.new(0, 15)
+PlayerListGuiCorner.Parent = PlayerListGui
+
+local PlayerListGuiStroke = Instance.new("UIStroke")
+PlayerListGuiStroke.Color = Color3.fromRGB(120, 120, 140)
+PlayerListGuiStroke.Thickness = 3
+PlayerListGuiStroke.Parent = PlayerListGui
+
+PlayerListLabel.Name = "玩家列表标题"
+PlayerListLabel.Parent = PlayerListGui
+PlayerListLabel.BackgroundColor3 = Color3.fromRGB(25, 25, 35)
+PlayerListLabel.BorderSizePixel = 0
+PlayerListLabel.Size = UDim2.new(1, 0, 0.1, 0)
+PlayerListLabel.Font = Enum.Font.Nunito
+PlayerListLabel.Text = "玩家列表"
+PlayerListLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+PlayerListLabel.TextScaled = true
+PlayerListLabel.TextSize = 20.000
+
+local PlayerListLabelCorner = Instance.new("UICorner")
+PlayerListLabelCorner.CornerRadius = UDim.new(0, 15)
+PlayerListLabelCorner.Parent = PlayerListLabel
+
+CloseButton.Name = "关闭按钮"
+CloseButton.Parent = PlayerListGui
+CloseButton.BackgroundColor3 = Color3.fromRGB(200, 80, 80)
+CloseButton.BorderSizePixel = 0
+CloseButton.Position = UDim2.new(0.85, 0, 0.02, 0)
+CloseButton.Size = UDim2.new(0.12, 0, 0.06, 0)
+CloseButton.Font = Enum.Font.Nunito
+CloseButton.Text = "×"
+CloseButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+CloseButton.TextScaled = true
+CloseButton.TextSize = 20.000
+
+local CloseButtonCorner = Instance.new("UICorner")
+CloseButtonCorner.CornerRadius = UDim.new(0, 8)
+CloseButtonCorner.Parent = CloseButton
+
+PlayerListScrollFrame.Name = "玩家滚动框"
+PlayerListScrollFrame.Parent = PlayerListGui
+PlayerListScrollFrame.BackgroundColor3 = Color3.fromRGB(45, 45, 55)
+PlayerListScrollFrame.BorderSizePixel = 0
+PlayerListScrollFrame.Position = UDim2.new(0.05, 0, 0.15, 0)
+PlayerListScrollFrame.Size = UDim2.new(0.9, 0, 0.8, 0)
+PlayerListScrollFrame.ScrollBarThickness = 8
+PlayerListScrollFrame.ScrollBarImageColor3 = Color3.fromRGB(100, 100, 120)
+
+local ScrollFrameCorner = Instance.new("UICorner")
+ScrollFrameCorner.CornerRadius = UDim.new(0, 10)
+ScrollFrameCorner.Parent = PlayerListScrollFrame
+
+UIListLayout.Parent = PlayerListScrollFrame
+UIListLayout.SortOrder = Enum.SortOrder.Name
+UIListLayout.Padding = UDim.new(0, 2)
+
+-- 脚本部分:
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local LocalPlayer = Players.LocalPlayer
+local UserInputService = game:GetService("UserInputService")
+local Workspace = game:GetService("Workspace")
+
+local character
+local humanoidRootPart
+mainStatus = true
+
+-- 显示通知函数
+local function ShowNotification(title, text, duration)
+    game:GetService("StarterGui"):SetCore("SendNotification", {
+        Title = title,
+        Text = text,
+        Duration = duration or 3
+    })
+end
+
+-- 热键控制主GUI显示/隐藏
+UserInputService.InputBegan:Connect(function(input, gameProcessedEvent)
+    if input.KeyCode == Enum.KeyCode.RightControl and not gameProcessedEvent then
+        mainStatus = not mainStatus
+        Main.Visible = mainStatus
+        ShowNotification("提示", mainStatus and "界面已显示" or "界面已隐藏")
+    end
+end)
+
+local Folder = Instance.new("Folder", Workspace)
+local Part = Instance.new("Part", Folder)
+local Attachment1 = Instance.new("Attachment", Part)
+Part.Name = "传送锚点"
+Part.Anchored = true
+Part.CanCollide = false
+Part.Transparency = 1
+
+-- 网络控制系统
+if not getgenv().Network then
+    getgenv().Network = {
+        BaseParts = {},
+        Velocity = Vector3.new(14.46262424, 14.46262424, 14.46262424)
+    }
+    
+    Network.RetainPart = function(Part)
+        if Part:IsA("BasePart") and Part:IsDescendantOf(Workspace) then
+            table.insert(Network.BaseParts, Part)
+            Part.CustomPhysicalProperties = PhysicalProperties.new(0, 0, 0, 0, 0)
+            Part.CanCollide = false
+        end
+    end
+    
+    local function EnablePartControl()
+        LocalPlayer.ReplicationFocus = Workspace
+        RunService.Heartbeat:Connect(function()
+            sethiddenproperty(LocalPlayer, "SimulationRadius", math.huge)
+            for _, Part in pairs(Network.BaseParts) do
+                if Part:IsDescendantOf(Workspace) then
+                    Part.Velocity = Network.Velocity
+                end
+            end
+        end)
+    end
+    
+    EnablePartControl()
+end
+
+-- 零件控制函数
+local function ForcePart(v)
+    if v:IsA("BasePart") and not v.Anchored and not v.Parent:FindFirstChildOfClass("Humanoid") and not v.Parent:FindFirstChild("Head") and v.Name ~= "Handle" then
+        for _, x in ipairs(v:GetChildren()) do
+            if x:IsA("BodyMover") or x:IsA("RocketPropulsion") then
+                x:Destroy()
+            end
+        end
+        
+        if v:FindFirstChild("Attachment") then
+            v:FindFirstChild("Attachment"):Destroy()
+        end
+        if v:FindFirstChild("AlignPosition") then
+            v:FindFirstChild("AlignPosition"):Destroy()
+        end
+        if v:FindFirstChild("Torque") then
+            v:FindFirstChild("Torque"):Destroy()
+        end
+        
+        v.CanCollide = false
+        local Torque = Instance.new("Torque", v)
+        Torque.Torque = Vector3.new(100000, 100000, 100000)
+        local AlignPosition = Instance.new("AlignPosition", v)
+        local Attachment2 = Instance.new("Attachment", v)
+        Torque.Attachment0 = Attachment2
+        AlignPosition.MaxForce = math.huge
+        AlignPosition.MaxVelocity = math.huge
+        AlignPosition.Responsiveness = 200
+        AlignPosition.Attachment0 = Attachment2
+        AlignPosition.Attachment1 = Attachment1
+    end
+end
+
+local blackHoleActive = false
+local DescendantAddedConnection
+
+-- 切换传送零件功能
+local function toggleBlackHole()
+    blackHoleActive = not blackHoleActive
+    if blackHoleActive then
+        Button.Text = "传送零件 | 开启"
+        Button.BackgroundColor3 = Color3.fromRGB(200, 80, 80)
+        
+        for _, v in ipairs(Workspace:GetDescendants()) do
+            ForcePart(v)
+        end
+        
+        DescendantAddedConnection = Workspace.DescendantAdded:Connect(function(v)
+            if blackHoleActive then
+                ForcePart(v)
+            end
+        end)
+        
+        spawn(function()
+            while blackHoleActive and RunService.RenderStepped:Wait() do
+                if humanoidRootPart then
+                    Attachment1.WorldCFrame = humanoidRootPart.CFrame
+                end
+            end
+        end)
+    else
+        Button.Text = "传送零件 | 关闭"
+        Button.BackgroundColor3 = Color3.fromRGB(80, 120, 200)
+        if DescendantAddedConnection then
+            DescendantAddedConnection:Disconnect()
+        end
+    end
+end
+
+-- 查找玩家函数
+local function getPlayer(name)
+    if name == "" then return nil end
+    local lowerName = string.lower(name)
+    for _, p in pairs(Players:GetPlayers()) do
+        local lowerPlayer = string.lower(p.Name)
+        if string.find(lowerPlayer, lowerName) then
+            return p
+        elseif string.find(string.lower(p.DisplayName), lowerName) then
+            return p
+        end
+    end
+    return nil
+end
+
+local selectedPlayer = nil
+
+-- 创建玩家按钮
+local function createPlayerButton(player)
+    local playerButton = Instance.new("TextButton")
+    playerButton.Name = player.Name
+    playerButton.Parent = PlayerListScrollFrame
+    playerButton.BackgroundColor3 = Color3.fromRGB(55, 55, 65)
+    playerButton.BorderSizePixel = 0
+    playerButton.Size = UDim2.new(1, -10, 0, 35)
+    playerButton.Font = Enum.Font.Nunito
+    
+    -- 设置按钮文本（用户名和昵称）
+    local displayText = player.Name
+    if player.DisplayName and player.DisplayName ~= player.Name then
+        displayText = player.Name .. " (" .. player.DisplayName .. ")"
+    end
+    playerButton.Text = displayText
+    
+    playerButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+    playerButton.TextScaled = true
+    playerButton.TextSize = 16.000
+    
+    local playerButtonCorner = Instance.new("UICorner")
+    playerButtonCorner.CornerRadius = UDim.new(0, 6)
+    playerButtonCorner.Parent = playerButton
+    
+    -- 点击事件
+    playerButton.MouseButton1Click:Connect(function()
+        selectedPlayer = player
+        Box.Text = player.Name
+        PlayerListGui.Visible = false
+        ShowNotification("选择玩家", "已选择: "..displayText)
+    end)
+    
+    -- 悬停效果
+    playerButton.MouseEnter:Connect(function()
+        playerButton.BackgroundColor3 = Color3.fromRGB(75, 75, 85)
+    end)
+    
+    playerButton.MouseLeave:Connect(function()
+        playerButton.BackgroundColor3 = Color3.fromRGB(55, 55, 65)
+    end)
+    
+    return playerButton
+end
+
+-- 更新玩家列表
+local function updatePlayerList()
+    -- 清除现有按钮
+    for _, child in pairs(PlayerListScrollFrame:GetChildren()) do
+        if child:IsA("TextButton") then
+            child:Destroy()
+        end
+    end
+    
+    -- 创建新按钮
+    for _, player in pairs(Players:GetPlayers()) do
+        if player ~= LocalPlayer then
+            createPlayerButton(player)
+        end
+    end
+    
+    -- 更新滚动框大小
+    PlayerListScrollFrame.CanvasSize = UDim2.new(0, 0, 0, UIListLayout.AbsoluteContentSize.Y + 10)
+end
+
+-- 玩家加入/离开事件
+Players.PlayerAdded:Connect(function(player)
+    wait(0.1) -- 等待玩家完全加载
+    updatePlayerList()
+end)
+
+Players.PlayerRemoving:Connect(function(player)
+    if selectedPlayer == player then
+        selectedPlayer = nil
+        Box.Text = ""
+        
+        -- 如果黑洞正在运行，显示通知
+        if blackHoleActive then
+            ShowNotification("玩家离开", player.Name.." 已离开游戏，传送已停止")
+            
+            -- 自动关闭黑洞功能
+            if blackHoleActive then
+                toggleBlackHole()
+            end
+        end
+    end
+    updatePlayerList()
+end)
+
+-- 初始化玩家列表
+updatePlayerList()
+
+-- 玩家列表按钮点击事件
+PlayerListButton.MouseButton1Click:Connect(function()
+    PlayerListGui.Visible = not PlayerListGui.Visible
+    if PlayerListGui.Visible then
+        updatePlayerList()
+    end
+end)
+
+-- 关闭按钮点击事件
+CloseButton.MouseButton1Click:Connect(function()
+    PlayerListGui.Visible = false
+end)
+
+-- 文本框脚本
+Box.FocusLost:Connect(function(enterPressed)
+    if enterPressed then
+        selectedPlayer = getPlayer(Box.Text)
+        if selectedPlayer then
+            Box.Text = selectedPlayer.Name
+            ShowNotification("选择玩家", "已选择: "..selectedPlayer.Name)
+        else
+            ShowNotification("错误", "未找到玩家: "..Box.Text)
+        end
+    end
+end)
+
+-- 传送按钮脚本
+Button.MouseButton1Click:Connect(function()
+    if selectedPlayer then
+        if selectedPlayer.Character then
+            character = selectedPlayer.Character
+            humanoidRootPart = character:FindFirstChild("HumanoidRootPart")
+        else
+            ShowNotification("等待", "正在等待玩家角色加载...")
+            character = selectedPlayer.CharacterAdded:Wait()
+            humanoidRootPart = character:WaitForChild("HumanoidRootPart")
+        end
+        
+        -- 显示开始传送通知
+        ShowNotification("传送开始", "正在传送零件到 "..selectedPlayer.Name)
+        
+        toggleBlackHole()
+    else
+        -- 显示未选择玩家错误
+        ShowNotification("错误", "请先选择一个玩家")
+    end
+end)
+
+-- 初始提示
+ShowNotification("零件传送器", "工具已加载成功！\n按右Ctrl键显示/隐藏界面", 5)
+print("零件传送工具已加载！")
+print("按右Ctrl键显示/隐藏主界面")
+print("点击 + 按钮打开玩家选择列表")
