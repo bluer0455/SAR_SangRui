@@ -18,6 +18,18 @@ local services =
 
 local mouse = services.Players.LocalPlayer:GetMouse()
 
+local function PlaySound(id)
+    local sound = Instance.new("Sound")
+    sound.SoundId = "rbxassetid://" .. tostring(id)
+    sound.Volume = 1
+    sound.PlayOnRemove = true
+    sound.Parent = services.SoundService
+    sound:Destroy()
+end
+
+local ClickSoundId = 9116283546 -- 全局点击音效 ID
+
+
 function Tween(obj, t, data)
     services.TweenService:Create(obj, TweenInfo.new(t[1], Enum.EasingStyle[t[2]], Enum.EasingDirection[t[3]]), data):Play(
 
@@ -488,15 +500,7 @@ function library.new(library, name, theme)
     Open.Draggable = true
     local uihide = false 
 
-    
-    -- 主界面显隐按钮音效
-    local Sound = Instance.new("Sound", Open)
-    Sound.SoundId = "rbxassetid://9116283546"
-    Sound.Volume = 1
-    Sound:Play()
-    Sound.Ended:Connect(function() Sound:Destroy() end)
-    
-Open.MouseButton1Click:Connect(function()
+    Open.MouseButton1Click:Connect(function()
     if uihide == false then
         uihide = true
         Main:TweenPosition(UDim2.new(0.5, 0, 2, 0), "Out", "Sine", 0.9, true) 
@@ -574,27 +578,21 @@ Open.MouseButton1Click:Connect(function()
         TabL.SortOrder = Enum.SortOrder.LayoutOrder
         TabL.Padding = UDim.new(0, 4)
 
-        Tab
-    -- 按钮点击音效
-    local Sound = Instance.new("Sound", Btn)
-    Sound.SoundId = "rbxassetid://9116283546"
-    Sound.Volume = 1
-    Sound:Play()
-    Sound.Ended:Connect(function() Sound:Destroy() end)
-    
-Btn.MouseButton1Click:Connect(
+        TabBtn.MouseButton1Click:Connect(
             function()
                 spawn(
                     function()
                         Ripple(TabBtn)
                     end
                 )
+                PlaySound(ClickSoundId)
                 switchTab({TabIco, Tab})
             end
         )
 
         if library.currentTab == nil then
-            switchTab({TabIco, Tab})
+            PlaySound(ClickSoundId)
+                switchTab({TabIco, Tab})
         end
 
         TabL:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(
@@ -680,16 +678,9 @@ Btn.MouseButton1Click:Connect(
                 SectionOpen.ImageTransparency = (open and 1 or 0)
             end
 
-            
-    -- 分区展开/收起音效
-    local Sound = Instance.new("Sound", SectionToggle)
-    Sound.SoundId = "rbxassetid://9116283546"
-    Sound.Volume = 1
-    Sound:Play()
-    Sound.Ended:Connect(function() Sound:Destroy() end)
-    
-SectionToggle.MouseButton1Click:Connect(
+            SectionToggle.MouseButton1Click:Connect(
                 function()
+                    PlaySound(ClickSoundId)
                     open = not open
                     Section.Size = UDim2.new(0.981000006, 0, 0, open and 36 + ObjsL.AbsoluteContentSize.Y + 8 or 36)
                     SectionOpened.ImageTransparency = (open and 0 or 1)
@@ -739,19 +730,12 @@ SectionToggle.MouseButton1Click:Connect(
                 BtnC.Name = "BtnC"
                 BtnC.Parent = Btn
 
-                
-    -- 按钮点击音效
-    local Sound = Instance.new("Sound", Btn)
-    Sound.SoundId = "rbxassetid://9116283546"
-    Sound.Volume = 1
-    Sound:Play()
-    Sound.Ended:Connect(function() Sound:Destroy() end)
-    
-Btn.MouseButton1Click:Connect(
+                Btn.MouseButton1Click:Connect(
                     function()
                         spawn(
                             function()
                                 Ripple(Btn)
+        PlaySound(ClickSoundId)
                             end
                         )
                         spawn(callback)
@@ -873,17 +857,10 @@ Btn.MouseButton1Click:Connect(
                     funcs:SetState(flag, true)
                 end
 
-                Toggle
-    -- 按钮点击音效
-    local Sound = Instance.new("Sound", Btn)
-    Sound.SoundId = "rbxassetid://9116283546"
-    Sound.Volume = 1
-    Sound:Play()
-    Sound.Ended:Connect(function() Sound:Destroy() end)
-    
-Btn.MouseButton1Click:Connect(
+                ToggleBtn.MouseButton1Click:Connect(
                     function()
-                        funcs:SetState()
+                        PlaySound(ClickSoundId)
+        funcs:SetState()
                     end
                 )
                 return funcs
@@ -1265,15 +1242,7 @@ Btn.MouseButton1Click:Connect(
                     end
                 }
 
-                
-    -- 滑块减少按钮音效
-    local Sound = Instance.new("Sound", MinSlider)
-    Sound.SoundId = "rbxassetid://9116283546"
-    Sound.Volume = 1
-    Sound:Play()
-    Sound.Ended:Connect(function() Sound:Destroy() end)
-    
-MinSlider.MouseButton1Click:Connect(
+                MinSlider.MouseButton1Click:Connect(
                     function()
                         local currentValue = library.flags[flag]
                         currentValue = math.clamp(currentValue - 1, min, max)
@@ -1281,15 +1250,7 @@ MinSlider.MouseButton1Click:Connect(
                     end
                 )
 
-                
-    -- 滑块增加按钮音效
-    local Sound = Instance.new("Sound", AddSlider)
-    Sound.SoundId = "rbxassetid://9116283546"
-    Sound.Volume = 1
-    Sound:Play()
-    Sound.Ended:Connect(function() Sound:Destroy() end)
-    
-AddSlider.MouseButton1Click:Connect(
+                AddSlider.MouseButton1Click:Connect(
                     function()
                         local currentValue = library.flags[flag]
                         currentValue = math.clamp(currentValue + 1, min, max)
@@ -1502,6 +1463,7 @@ AddSlider.MouseButton1Click:Connect(
 
                 local open = false
                 local ToggleDropVis = function()
+                    PlaySound(ClickSoundId)
                     open = not open
                     if open then
                         setAllVisible()
@@ -1511,15 +1473,7 @@ AddSlider.MouseButton1Click:Connect(
                         UDim2.new(0, 428, 0, (open and DropdownModuleL.AbsoluteContentSize.Y + 4 or 38))
                 end
 
-                Dropdown
-    -- 主界面显隐按钮音效
-    local Sound = Instance.new("Sound", Open)
-    Sound.SoundId = "rbxassetid://9116283546"
-    Sound.Volume = 1
-    Sound:Play()
-    Sound.Ended:Connect(function() Sound:Destroy() end)
-    
-Open.MouseButton1Click:Connect(ToggleDropVis)
+                DropdownOpen.MouseButton1Click:Connect(ToggleDropVis)
                 DropdownText.Focused:Connect(
                     function()
                         if open then
@@ -1568,17 +1522,10 @@ Open.MouseButton1Click:Connect(ToggleDropVis)
                     OptionC.Name = "OptionC"
                     OptionC.Parent = Option
 
-                    
-    -- 下拉菜单选项点击音效
-    local Sound = Instance.new("Sound", Option)
-    Sound.SoundId = "rbxassetid://9116283546"
-    Sound.Volume = 1
-    Sound:Play()
-    Sound.Ended:Connect(function() Sound:Destroy() end)
-    
-Option.MouseButton1Click:Connect(
+                    Option.MouseButton1Click:Connect(
                         function()
                             ToggleDropVis()
+                            PlaySound(ClickSoundId)
                             callback(Option.Text)
                             DropdownText.Text = Option.Text
                             library.flags[flag] = Option.Text
