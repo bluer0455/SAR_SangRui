@@ -356,6 +356,7 @@ function library.new(library, name, theme)
     ScriptTitle.TextSize = 14.000
     ScriptTitle.TextScaled = true
     ScriptTitle.TextXAlignment = Enum.TextXAlignment.Left
+ScriptTitle.FontFace = Font.new("rbxassetid://12187376545") -- 替换 FONT_ID_HERE 为你想要的字体 ID
 
     UIGradientTitle.Parent = ScriptTitle
 
