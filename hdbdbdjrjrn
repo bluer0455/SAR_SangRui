@@ -229,23 +229,6 @@ function library.new(library, name, theme)
     Main.Active = true
     Main.Draggable = true
 
-    Main.Visible = false
-    Main.Size = UDim2.new(0, 0, 0, 0)
-    task.delay(0.1, function()
-        Main.Visible = true
-        TweenService:Create(Main, TweenInfo.new(0.35, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
-            Size = UDim2.new(0, 572, 0, 353)
-        }):Play()
-        task.wait(0.35)
-        TweenService:Create(Main, TweenInfo.new(0.2, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut), {
-            Size = UDim2.new(0, 560, 0, 343)
-        }):Play()
-        task.wait(0.2)
-        TweenService:Create(Main, TweenInfo.new(0.15, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut), {
-            Size = UDim2.new(0, 572, 0, 353)
-        }):Play()
-    end)
-
     UICornerMain.Parent = Main
     UICornerMain.CornerRadius = UDim.new(0, 3)
 
