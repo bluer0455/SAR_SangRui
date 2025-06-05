@@ -27,7 +27,7 @@ local function PlaySound(id)
     sound:Destroy()
 end
 
-local ClickSoundId = 9116283546 -- 鍏ㄥ眬鐐瑰嚮闊虫晥 ID
+local ClickSoundId = 9116283546 -- 全局点击音效 ID
 
 
 function Tween(obj, t, data)
@@ -492,7 +492,7 @@ function library.new(library, name, theme)
     Open.Size = UDim2.new(0, 61, 0, 32)
     Open.Transparency = 0.75
     Open.Font = Enum.Font.SourceSans
-    Open.Text = "闅愯棌/鎵撳紑"
+    Open.Text = "隐藏/打开"
     Open.TextColor3 = Color3.fromRGB(240, 240, 240)
     Open.TextTransparency = 0
     Open.TextSize = 14.000
