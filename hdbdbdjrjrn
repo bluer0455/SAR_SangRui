@@ -27,7 +27,7 @@ local function PlaySound(id)
     sound:Destroy()
 end
 
-local ClickSoundId = 9118823103 -- 全局点击音效 ID
+local ClickSoundId = 9116283546 -- 全局点击音效 ID
 
 
 function Tween(obj, t, data)
