@@ -1,0 +1,1364 @@
+---都是缝合了 开源随便改😃
+
+local vu = game:GetService("VirtualUser")
+game:GetService("Players").LocalPlayer.Idled:connect(function()
+   vu:Button2Down(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
+   wait(1)
+   vu:Button2Up(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
+end)
+wait(0.2)
+local CoreGui = game:GetService("StarterGui")
+local Players = game:GetService("Players")
+
+local targetUserId = 7488455360
+local thumbType = Enum.ThumbnailType.HeadShot
+local thumbSize = Enum.ThumbnailSize.Size420x420
+local avatarContent, isReady = Players:GetUserThumbnailAsync(targetUserId, thumbType, thumbSize)
+
+CoreGui:SetCore("SendNotification", {
+    Title = "提示",
+    Text = "反挂机已经为你开启.",
+    Icon = isReady and avatarContent or nil,
+    Duration = 5
+})
+wait(1)
+
+CoreGui:SetCore("SendNotification", {
+    Title = "提示",
+    Text = "正在加载Xsar.",
+    Icon = isReady and avatarContent or nil,
+    Duration = 5
+})
+wait(0.7)
+print([[
+
+
+██╗  ██╗███████╗ █████╗ ██████╗ 
+╚██╗██╔╝██╔════╝██╔══██╗██╔══██╗
+ ╚███╔╝ ███████╗███████║██████╔╝
+ ██╔██╗ ╚════██║██╔══██║██╔══██╗
+██╔╝╚██╗███████║██║  ██║██║  ██║
+╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝
+
+
+]])
+local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/bluer0455/SAR_SangRui/refs/heads/main/hdbdbdjrjrn", true))()
+local window = library:new("Xsar V4")
+local lighting = game:GetService("Lighting")
+local runService = game:GetService("RunService")
+local creds = window:Tab("关于", "6035145364")
+local bin = creds:section("公告", true)
+bin:Label("这个是XSAR通用脚本")
+bin:Label("完全免费")
+bin:Label("不要来圈钱")
+bin:Label("已经很用心做了")
+local credits = creds:section("设置", true)
+credits:Toggle("显示时间", "", false, function(state)
+if state then
+    TimeGui = Instance.new("ScreenGui")
+	TimeLabel = Instance.new("TextLabel")
+    TimeGui.Name = "TimeDisplay"
+    TimeGui.Parent = game.CoreGui;
+    TimeGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling;
+    TimeLabel.Parent = TimeGui;
+    TimeLabel.BackgroundTransparency = 1;
+    TimeLabel.Position = UDim2.new(0.75, 0, 0.02, 0)
+    TimeLabel.Size = UDim2.new(0, 200, 0, 30)
+	TimeLabel.Font = Enum.Font.GothamSemibold;
+    TimeLabel.TextColor3 = Color3.new(1, 1, 1)
+    TimeLabel.TextSize = 20;
+    TimeLabel.TextWrapped = true;
+	HeartbeatConnection = game:GetService("RunService").Heartbeat:Connect(function()
+    TimeLabel.Text = os.date("当前时间:%H时%M分%S秒")
+end)
+else
+if HeartbeatConnection then
+    HeartbeatConnection:Disconnect()
+    HeartbeatConnection = nil;
+end
+if TimeGui then
+    TimeGui:Destroy()
+    TimeGui = nil;
+end
+end
+end)
+credits:Toggle("显示FPS", "FPSDisplay", false, function(state)
+if state then
+    local FpsGui = Instance.new("ScreenGui")
+    FpsGui.Name = "FPSGui"
+    FpsGui.ResetOnSpawn = false;
+    FpsGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling;
+    FpsGui.Parent = game.Players.LocalPlayer.PlayerGui;
+    local FpsXS = Instance.new("TextLabel")
+    FpsXS.Name = "FpsXS"
+	FpsXS.Size = UDim2.new(0, 100, 0, 50)
+	FpsXS.Position = UDim2.new(0, 10, 0, 10)
+	FpsXS.BackgroundTransparency = 1;
+    FpsXS.Font = Enum.Font.SourceSansBold;
+    FpsXS.Text = "FPS: 0"
+    FpsXS.TextSize = 20;
+    FpsXS.TextColor3 = Color3.new(1, 1, 1)
+    FpsXS.Parent = FpsGui;
+    local connection = game:GetService("RunService").RenderStepped:Connect(function(step)
+    local fps = math.clamp(math.floor(1 / step), 0, 200)
+    FpsXS.Text = "FPS: " .. fps;
+end)
+FpsGui.Destroying:Connect(function()
+connection:Disconnect()
+end)
+else
+local fpsGui = game.Players.LocalPlayer.PlayerGui:FindFirstChild("FPSGui")
+if fpsGui then
+    fpsGui:Destroy()
+end
+end
+end)
+
+credits:Button("复制游戏ID", function()
+    local gameId = tostring(game.PlaceId)
+    setclipboard(gameId)
+    game:GetService("StarterGui"):SetCore("SendNotification", {
+        Title = "成功",
+        Text = "游戏ID已复制: "..gameId,
+        Duration = 3
+    })
+end)
+
+credits:Button("复制坐标到剪贴板", function()
+local player = game.Players.LocalPlayer;
+if (player.Character and player.Character:FindFirstChild("HumanoidRootPart")) then
+    local position = player.Character.HumanoidRootPart.Position;
+    local coordText = string.format("Vector3.new(%.6f, %.6f, %.6f)", position.X, position.Y, position.Z)
+    setclipboard(coordText)
+	game:GetService("StarterGui"):SetCore("SendNotification", {Title="成功",Text=("坐标已复制: " .. coordText),Duration=3})
+else
+game:GetService("StarterGui"):SetCore("SendNotification", {Title="错误",Text="无法获取角色坐标",Duration=3})
+end
+end)
+credits:Button("摧毁GUI", function()
+game:GetService("CoreGui")["frosty is cute"]:Destroy()
+end)
+local creds = window:Tab("人物属性", "6031097229")
+local credits = creds:section("人物属性", true)
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local LocalPlayer = Players.LocalPlayer;
+local lockedProperties = {WalkSpeed=false,JumpPower=false,Gravity=false,HipHeight=false,CameraMaxZoomDistance=false,FieldOfView=false}
+local propertyConnections = {}
+local function getDefaultValues()
+local defaults = {}
+local player = LocalPlayer;
+if (player.Character and player.Character:FindFirstChild("Humanoid")) then
+    defaults.WalkSpeed = player.Character.Humanoid.WalkSpeed;
+    defaults.JumpPower = player.Character.Humanoid.JumpPower;
+    defaults.HipHeight = player.Character.Humanoid.HipHeight;
+else
+defaults.WalkSpeed = 16;
+defaults.JumpPower = 50;
+defaults.HipHeight = 2;
+end
+defaults.Gravity = workspace.Gravity;
+defaults.CameraMaxZoomDistance = player.CameraMaxZoomDistance;
+defaults.FieldOfView = workspace.CurrentCamera.FieldOfView;
+return defaults;
+end
+local defaultValues = getDefaultValues()
+local playerSettings = {WalkSpeed=defaultValues.WalkSpeed,JumpPower=defaultValues.JumpPower,Gravity=defaultValues.Gravity,HipHeight=defaultValues.HipHeight,CameraMaxZoomDistance=defaultValues.CameraMaxZoomDistance,FieldOfView=defaultValues.FieldOfView}
+local function updatePlayerAttributes()
+local player = LocalPlayer;
+if (player.Character and player.Character:FindFirstChild("Humanoid")) then
+    local humanoid = player.Character.Humanoid;
+	if not lockedProperties.WalkSpeed then
+        humanoid.WalkSpeed = math.min(playerSettings.WalkSpeed, 500)
+    else
+    humanoid.WalkSpeed = playerSettings.WalkSpeed;
+end
+if not lockedProperties.JumpPower then
+    humanoid.JumpPower = math.min(playerSettings.JumpPower, 500)
+else
+humanoid.JumpPower = playerSettings.JumpPower;
+end
+if not lockedProperties.HipHeight then
+    humanoid.HipHeight = math.min(playerSettings.HipHeight, 500)
+else
+humanoid.HipHeight = playerSettings.HipHeight;
+end
+end
+if not lockedProperties.Gravity then
+	workspace.Gravity = playerSettings.Gravity;
+end
+if not lockedProperties.CameraMaxZoomDistance then
+    player.CameraMaxZoomDistance = playerSettings.CameraMaxZoomDistance;
+end
+if not lockedProperties.FieldOfView then
+	workspace.CurrentCamera.FieldOfView = math.min(playerSettings.FieldOfView, 120)
+end
+end
+local function lockProperty(propertyName, state)
+lockedProperties[propertyName] = state;
+if propertyConnections[propertyName] then
+    propertyConnections[propertyName]:Disconnect()
+    propertyConnections[propertyName] = nil;
+end
+if state then
+    if ((propertyName == "WalkSpeed") or (propertyName == "JumpPower") or (propertyName == "HipHeight")) then
+        local function setupHumanoidConnection(humanoid)
+        if not humanoid then
+            return;
+        end
+        humanoid[propertyName] = playerSettings[propertyName]
+        propertyConnections[propertyName] = humanoid:GetPropertyChangedSignal(propertyName):Connect(function()
+		if lockedProperties[propertyName] then
+			humanoid[propertyName] = playerSettings[propertyName]
+		end
+    end)
+end
+if LocalPlayer.Character then
+    local humanoid = LocalPlayer.Character:FindFirstChild("Humanoid")
+	setupHumanoidConnection(humanoid)
+end
+LocalPlayer.CharacterAdded:Connect(function(character)
+local humanoid = character:WaitForChild("Humanoid")
+setupHumanoidConnection(humanoid)
+end)
+elseif (propertyName == "Gravity") then
+	workspace.Gravity = playerSettings.Gravity;
+    propertyConnections[propertyName] = workspace:GetPropertyChangedSignal("Gravity"):Connect(function()
+    if lockedProperties.Gravity then
+        workspace.Gravity = playerSettings.Gravity;
+    end
+end)
+elseif (propertyName == "CameraMaxZoomDistance") then
+    LocalPlayer.CameraMaxZoomDistance = playerSettings.CameraMaxZoomDistance;
+    propertyConnections[propertyName] = LocalPlayer:GetPropertyChangedSignal("CameraMaxZoomDistance"):Connect(function()
+    if lockedProperties.CameraMaxZoomDistance then
+        LocalPlayer.CameraMaxZoomDistance = playerSettings.CameraMaxZoomDistance;
+    end
+end)
+elseif (propertyName == "FieldOfView") then
+    workspace.CurrentCamera.FieldOfView = playerSettings.FieldOfView;
+    propertyConnections[propertyName] = workspace.CurrentCamera:GetPropertyChangedSignal("FieldOfView"):Connect(function()
+    if lockedProperties.FieldOfView then
+        workspace.CurrentCamera.FieldOfView = playerSettings.FieldOfView;
+	end
+end)
+end
+end
+end
+LocalPlayer.CharacterAdded:Connect(function(character)
+local humanoid = character:WaitForChild("Humanoid")
+if humanoid then
+    if lockedProperties.WalkSpeed then
+        humanoid.WalkSpeed = playerSettings.WalkSpeed;
+    else
+    humanoid.WalkSpeed = math.min(playerSettings.WalkSpeed, 500)
+end
+if lockedProperties.JumpPower then
+    humanoid.JumpPower = playerSettings.JumpPower;
+else
+humanoid.JumpPower = math.min(playerSettings.JumpPower, 500)
+end
+if lockedProperties.HipHeight then
+    humanoid.HipHeight = playerSettings.HipHeight;
+else
+humanoid.HipHeight = math.min(playerSettings.HipHeight, 500)
+end
+if lockedProperties.WalkSpeed then
+	lockProperty("WalkSpeed", true)
+end
+if lockedProperties.JumpPower then
+    lockProperty("JumpPower", true)
+end
+if lockedProperties.HipHeight then
+	lockProperty("HipHeight", true)
+end
+end
+end)
+credits:Slider("速度 (默认:" .. defaultValues.WalkSpeed .. ")", "WalkspeedSlider", defaultValues.WalkSpeed, 0, 500, false, function(Value)
+playerSettings.WalkSpeed = Value;
+updatePlayerAttributes()
+end)
+local speedMultiplier = 1;
+local velocityConnection = nil;
+credits:Slider("移动速度2", "SpeedMultiplier", 0, 0, 500, false, function(value)
+speedMultiplier = value / 100;
+if (not velocityConnection and (speedMultiplier > 1)) then
+    velocityConnection = game:GetService("RunService").Heartbeat:Connect(function()
+    local player = game.Players.LocalPlayer;
+    local character = player.Character;
+    if (character and character:FindFirstChild("Humanoid") and character:FindFirstChild("HumanoidRootPart")) then
+        local humanoid = character.Humanoid;
+        local rootPart = character.HumanoidRootPart;
+        local moveDirection = humanoid.MoveDirection;
+        if (moveDirection.Magnitude > 0) then
+            local currentVelocity = rootPart.Velocity;
+            local newVelocity = moveDirection * humanoid.WalkSpeed * speedMultiplier * 1.5;
+			newVelocity = Vector3.new(newVelocity.X, currentVelocity.Y, newVelocity.Z)
+            rootPart.Velocity = newVelocity;
+        end
+	end
+end)
+end
+if (velocityConnection and (speedMultiplier <= 1)) then
+    velocityConnection:Disconnect()
+	velocityConnection = nil;
+end
+end)
+credits:Toggle("锁定速度", "", false, function(state)
+lockProperty("WalkSpeed", state)
+end)
+credits:Button("恢复默认速度", function()
+if not lockedProperties.WalkSpeed then
+    playerSettings.WalkSpeed = defaultValues.WalkSpeed;
+    updatePlayerAttributes()
+end
+end)
+credits:Slider("跳跃高度 (默认:" .. (game.PlaceId == 18687417158 and 0 or defaultValues.JumpPower) .. ")", "JumpPowerSlider", game.PlaceId == 18687417158 and 0 or defaultValues.JumpPower, 0, 500, false, function(Value)
+playerSettings.JumpPower = Value;
+updatePlayerAttributes()
+end)
+credits:Toggle("锁定跳跃高度", "", false, function(state)
+lockProperty("JumpPower", state)
+end)
+credits:Button("恢复默认跳跃高度", function()
+if not lockedProperties.JumpPower then
+    playerSettings.JumpPower = defaultValues.JumpPower;
+    updatePlayerAttributes()
+end
+end)
+credits:Slider("重力 (默认:" .. defaultValues.Gravity .. ")", "GravitySlider", defaultValues.Gravity, 0, 1000, false, function(Value)
+playerSettings.Gravity = Value;
+updatePlayerAttributes()
+end)
+credits:Toggle("锁定重力", "", false, function(state)
+lockProperty("Gravity", state)
+end)
+credits:Button("恢复默认重力", function()
+if not lockedProperties.Gravity then
+    playerSettings.Gravity = defaultValues.Gravity;
+    updatePlayerAttributes()
+end
+end)
+credits:Slider("高度 (默认:" .. defaultValues.HipHeight .. ")", "Slider", defaultValues.HipHeight, 0, 500, false, function(Value)
+playerSettings.HipHeight = Value;
+updatePlayerAttributes()
+end)
+credits:Toggle("锁定高度", "", false, function(state)
+lockProperty("HipHeight", state)
+end)
+credits:Button("恢复默认高度", function()
+if not lockedProperties.HipHeight then
+    playerSettings.HipHeight = defaultValues.HipHeight;
+    updatePlayerAttributes()
+end
+end)
+credits:Slider("最大缩放距离 (默认:" .. defaultValues.CameraMaxZoomDistance .. ")", "ZOOOOOM OUT!", defaultValues.CameraMaxZoomDistance, 0, 200000, false, function(Value)
+playerSettings.CameraMaxZoomDistance = Value;
+updatePlayerAttributes()
+end)
+credits:Toggle("锁定缩放距离", "", false, function(state)
+lockProperty("CameraMaxZoomDistance", state)
+end)
+credits:Button("恢复默认最大缩放距离", function()
+if not lockedProperties.CameraMaxZoomDistance then
+    playerSettings.CameraMaxZoomDistance = defaultValues.CameraMaxZoomDistance;
+    updatePlayerAttributes()
+end
+end)
+credits:Slider("超广角 (默认:" .. defaultValues.FieldOfView .. ")", "Sliderflag", defaultValues.FieldOfView, 0.1, 120, false, function(Value)
+playerSettings.FieldOfView = Value;
+updatePlayerAttributes()
+end)
+credits:Toggle("锁定超广角", "", false, function(state)
+lockProperty("FieldOfView", state)
+end)
+credits:Button("恢复默认超广角", function()
+if not lockedProperties.FieldOfView then
+    playerSettings.FieldOfView = defaultValues.FieldOfView;
+    updatePlayerAttributes()
+end
+end)
+credits:Dropdown("摄像头视角切换", "选择视角类型", {"第一人称","第三人称"}, function(selected)
+if (selected == "第一人称") then
+    LocalPlayer.CameraMode = Enum.CameraMode.LockFirstPerson;
+    LocalPlayer.CameraMinZoomDistance = 0.5;
+    LocalPlayer.CameraMaxZoomDistance = 0.5;
+elseif (selected == "第三人称") then
+	LocalPlayer.CameraMode = Enum.CameraMode.Classic;
+    LocalPlayer.CameraMinZoomDistance = 5;
+    LocalPlayer.CameraMaxZoomDistance = 400;
+end
+end)
+local creds = window:Tab("实用", "6031097229")
+local credits = creds:section("实用", true)
+local defaultAmbient = game.Lighting.Ambient
+local ambientConnection = nil  
+credits:Toggle("夜视", "", false, function(state)
+    if state then
+                defaultAmbient = game.Lighting.Ambient
+        
+                game.Lighting.Ambient = Color3.new(1, 1, 1)
+        
+                if ambientConnection then
+            ambientConnection:Disconnect()
+        end
+        ambientConnection = game.Lighting:GetPropertyChangedSignal("Ambient"):Connect(function()
+                        if game.Lighting.Ambient ~= Color3.new(1, 1, 1) then
+                game.Lighting.Ambient = Color3.new(1, 1, 1)
+            end
+        end)
+    else
+                if ambientConnection then
+            ambientConnection:Disconnect()
+            ambientConnection = nil
+        end
+        game.Lighting.Ambient = defaultAmbient
+    end
+end)
+local noclipEnabled = false;
+local noclipConnection = nil;
+credits:Toggle("穿墙", "NoclipToggle", false, function(state)
+noclipEnabled = state;
+if noclipConnection then
+    noclipConnection:Disconnect()
+	noclipConnection = nil;
+end
+if state then
+    noclipConnection = game:GetService("RunService").Stepped:Connect(function()
+    if game.Players.LocalPlayer.Character then
+        for _, part in ipairs(game.Players.LocalPlayer.Character:GetDescendants()) do
+            if part:IsA("BasePart") then
+                part.CanCollide = false;
+            end
+        end
+    end
+end)
+elseif game.Players.LocalPlayer.Character then
+	for _, part in ipairs(game.Players.LocalPlayer.Character:GetDescendants()) do
+        if part:IsA("BasePart") then
+			part.CanCollide = true;
+		end
+    end
+    local humanoid = game.Players.LocalPlayer.Character:FindFirstChild("Humanoid")
+    if humanoid then
+		humanoid.Jump = true;
+    end
+end
+end)
+local infiniteJumpEnabled = false;
+local infiniteJumpConnection = nil;
+credits:Toggle("无限跳跃", "InfiniteJumpToggle", false, function(state)
+infiniteJumpEnabled = state;
+if infiniteJumpConnection then
+	infiniteJumpConnection:Disconnect()
+	infiniteJumpConnection = nil;
+end
+if state then
+    infiniteJumpConnection = game:GetService("UserInputService").JumpRequest:Connect(function()
+    local player = game.Players.LocalPlayer;
+    if (player.Character and player.Character:FindFirstChild("Humanoid")) then
+        player.Character.Humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+    end
+end)
+end
+end)
+local respawnAtDeathPointEnabled = false
+local deathPosition = nil
+local characterAddedConnection = nil
+local humanoidDiedConnection = nil
+
+credits:Toggle("复活传送到死亡点", "RespawnAtDeathPoint", false, function(state)
+    respawnAtDeathPointEnabled = state
+    
+    if state then
+        local player = game.Players.LocalPlayer
+        
+        local function setupDeathListener(character)
+            local humanoid = character:WaitForChild("Humanoid")
+            humanoidDiedConnection = humanoid.Died:Connect(function()
+                if character:FindFirstChild("HumanoidRootPart") then
+                    deathPosition = character.HumanoidRootPart.Position
+                end
+            end)
+        end
+        
+        characterAddedConnection = player.CharacterAdded:Connect(function(character)
+            character:WaitForChild("HumanoidRootPart")
+            wait(0.5)
+            if respawnAtDeathPointEnabled and deathPosition then
+                character.HumanoidRootPart.CFrame = CFrame.new(deathPosition)
+            end
+            setupDeathListener(character)
+        end)
+        
+        if player.Character then
+            setupDeathListener(player.Character)
+        end
+    else
+        if characterAddedConnection then
+            characterAddedConnection:Disconnect()
+            characterAddedConnection = nil
+        end
+        if humanoidDiedConnection then
+            humanoidDiedConnection:Disconnect()
+            humanoidDiedConnection = nil
+        end
+        deathPosition = nil
+    end
+end)
+credits:Button("玩家加入退出给提醒", function()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/boyscp/scriscriptsc/main/bbn.lua"))()
+end)
+credits:Button("重新加入服务器", function()
+game:GetService("TeleportService"):Teleport(game.PlaceId, game:GetService("Players").LocalPlayer)
+end)
+credits:Button("强制退出服务器", function()
+game.Players.LocalPlayer:Kick("这不是封禁只是将你强制退出服务器")
+end)
+local recordedPosition = nil;
+local teleportDelay = 0; 
+credits:Button("记录当前位置", function()
+    local player = game.Players.LocalPlayer;
+    local character = player.Character or player.CharacterAdded:Wait()
+    if (character and character:FindFirstChild("HumanoidRootPart")) then
+        recordedPosition = character.HumanoidRootPart.Position;
+        game:GetService("StarterGui"):SetCore("SendNotification", {
+            Title = "成功",
+            Text = "位置已记录",
+            Duration = 2
+        })
+    end
+end)
+
+credits:Slider("传送延迟(秒)", "TeleportDelaySlider", 0, 0, 10, true, function(value)
+    teleportDelay = value
+end)
+
+credits:Button("传送到记录位置", function()
+    if recordedPosition then
+        local player = game.Players.LocalPlayer;
+        local character = player.Character or player.CharacterAdded:Wait()
+        
+                game:GetService("StarterGui"):SetCore("SendNotification", {
+            Title = "传送中",
+            Text = string.format("%.1f秒后传送", teleportDelay),
+            Duration = teleportDelay > 0 and teleportDelay or 1
+        })
+        
+                wait(teleportDelay)
+        
+        if (character and character:FindFirstChild("HumanoidRootPart")) then
+            character.HumanoidRootPart.CFrame = CFrame.new(recordedPosition)
+        end
+    else
+        game:GetService("StarterGui"):SetCore("SendNotification", {
+            Title = "错误",
+            Text = "没有记录的位置",
+            Duration = 2
+        })
+    end
+end)
+credits:Button("免去坠落伤害(大部分游戏有效)",function() 
+local runsvc = game:GetService("RunService") local heartbeat = runsvc.Heartbeat;local rstepped = runsvc.RenderStepped;local lp = game:GetService("Players").LocalPlayer;local novel = Vector3.zero;local function nofalldamage(chr) local root = chr:WaitForChild("HumanoidRootPart") if root then local con;con = heartbeat:Connect(function() if not root.Parent then con:Disconnect() end local oldvel = root.AssemblyLinearVelocity;root.AssemblyLinearVelocity = novel;rstepped:Wait() root.AssemblyLinearVelocity = oldvel;end) end end if lp.Character then nofalldamage(lp.Character) end lp.CharacterAdded:Connect(nofalldamage) end)
+
+credits:Button("infiniteyield指令(玩那个黑洞脚本来这)", function()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source", true))()
+end)
+credits:Button("防止甩飞", function()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/bluer0455/SAR_SangRui/refs/heads/main/jsjshsbbdbebdbdbshshsbbdhshsbsuhs"))()
+end)
+credits:Button("甩飞", function()
+loadstring(game:HttpGet("https://pastebin.com/raw/zqyDSUWX"))()
+end)
+credits:Button("飞行v3", function()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/XNEOFF/FlyGuiV3/main/FlyGuiV3.txt"))()
+end)
+credits:Button("飞车(汉化)", function()
+local a=Instance.new("ScreenGui")local b=Instance.new("Frame")local c=Instance.new("Frame")local d=Instance.new("TextButton")local e=Instance.new("TextBox")local f=Instance.new("TextButton")local g=Instance.new("TextLabel")local h=Instance.new("TextLabel")local i=Instance.new("TextLabel")local j=Instance.new("TextButton")local k=Instance.new("TextLabel")local l=Instance.new("TextButton")local m=Instance.new("TextButton")local n=Instance.new("Frame")local o=Instance.new("TextButton")local p=Instance.new("TextButton")a.Name="Flym gui v2"a.Parent=game.CoreGui a.ZIndexBehavior=Enum.ZIndexBehavior.Sibling b.Name="Drag"b.Parent=a b.Active=true b.BackgroundColor3=Color3.fromRGB(0,150,191)b.BorderSizePixel=0 b.Draggable=true b.Position=UDim2.new(0.482438415,0,0.454874992,0)b.Size=UDim2.new(0,237,0,27)c.Name="FlyFrame"c.Parent=b c.BackgroundColor3=Color3.fromRGB(80,80,80)c.BorderSizePixel=0 c.Draggable=true c.Position=UDim2.new(-0.00200000009,0,0.989000022,0)c.Size=UDim2.new(0,237,0,139)d.Name="ddnsfbfwewefe"d.Parent=c d.BackgroundColor3=Color3.fromRGB(0,150,191)d.BorderSizePixel=0 d.Position=UDim2.new(-0.000210968778,0,-0.00395679474,0)d.Size=UDim2.new(0,237,0,27)d.Font=Enum.Font.SourceSans d.Text="作者: ahmad"d.TextColor3=Color3.fromRGB(255,255,255)d.TextSize=12 d.TextSize=14 d.TextWrapped=true e.Name="速度"e.Parent=c e.BackgroundColor3=Color3.fromRGB(63,63,63)e.BorderColor3=Color3.fromRGB(0,0,191)e.BorderSizePixel=0 e.Position=UDim2.new(0.445025861,0,0.402877688,0)e.Size=UDim2.new(0,111,0,33)e.Font=Enum.Font.SourceSans e.PlaceholderColor3=Color3.fromRGB(255,255,255)e.Text="50"e.TextColor3=Color3.fromRGB(255,255,255)e.TextSize=12 e.TextSize=14 e.TextWrapped=true f.Name="Fly"f.Parent=c f.BackgroundColor3=Color3.fromRGB(0,150,191)f.BorderSizePixel=0 f.Position=UDim2.new(0.0759493634,0,0.705797076,0)f.Size=UDim2.new(0,199,0,32)f.Font=Enum.Font.SourceSans f.Text="飞行"f.TextColor3=Color3.fromRGB(255,255,255)f.TextSize=12 f.TextSize=14 f.TextWrapped=true f.MouseButton1Click:Connect(function()local q=game.Players.LocalPlayer.Character.HumanoidRootPart f.Visible=false i.Text="开启"i.TextColor3=Color3.fromRGB(0,255,0)j.Visible=true n.Visible=true local r=Instance.new("BodyVelocity",q)local s=Instance.new("BodyGyro",q)r.MaxForce=Vector3.new(math.huge,math.huge,math.huge)game:GetService("RunService").RenderStepped:connect(function()s.MaxTorque=Vector3.new(math.huge,math.huge,math.huge)s.D=5000 s.P=100000 s.CFrame=game.Workspace.CurrentCamera.CFrame end)end)g.Name="Speeed"g.Parent=c g.BackgroundColor3=Color3.fromRGB(80,80,80)g.BorderSizePixel=0 g.Position=UDim2.new(0.0759493634,0,0.402877688,0)g.Size=UDim2.new(0,87,0,32)g.ZIndex=0 g.Font=Enum.Font.SourceSans g.Text="速度:"g.TextColor3=Color3.fromRGB(255,255,255)g.TextSize=12 g.TextSize=14 g.TextWrapped=true h.Name="Stat"h.Parent=c h.BackgroundColor3=Color3.fromRGB(80,80,80)h.BorderSizePixel=0 h.Position=UDim2.new(0.299983799,0,0.239817441,0)h.Size=UDim2.new(0,85,0,15)h.Font=Enum.Font.SourceSans h.Text="状态:"h.TextColor3=Color3.fromRGB(255,255,255)h.TextSize=12 h.TextSize=14 h.TextWrapped=true i.Name="Stat2"i.Parent=c i.BackgroundColor3=Color3.fromRGB(80,80,80)i.BorderSizePixel=0 i.Position=UDim2.new(0.546535194,0,0.239817441,0)i.Size=UDim2.new(0,27,0,15)i.Font=Enum.Font.SourceSans i.Text="关闭"i.TextColor3=Color3.fromRGB(255,0,0)i.TextSize=12 i.TextSize=14 i.TextWrapped=true j.Name="Unfly"j.Parent=c j.BackgroundColor3=Color3.fromRGB(0,150,191)j.BorderSizePixel=0 j.Position=UDim2.new(0.0759493634,0,0.705797076,0)j.Size=UDim2.new(0,199,0,32)j.Visible=false j.Font=Enum.Font.SourceSans j.Text="停止飞行"j.TextColor3=Color3.fromRGB(255,255,255)j.TextSize=12 j.TextSize=14 j.TextWrapped=true j.MouseButton1Click:Connect(function()local q=game.Players.LocalPlayer.Character.HumanoidRootPart f.Visible=true i.Text="关闭"i.TextColor3=Color3.fromRGB(255,0,0)wait()j.Visible=false n.Visible=false q:FindFirstChildOfClass("BodyVelocity"):Destroy()q:FindFirstChildOfClass("BodyGyro"):Destroy()end)k.Name="中文 | Vfly"k.Parent=b k.BackgroundColor3=Color3.fromRGB(0,150,191)k.BorderSizePixel=0 k.Size=UDim2.new(0,57,0,27)k.Font=Enum.Font.SourceSans k.Text="中文 | Vfly"k.TextColor3=Color3.fromRGB(255,255,255)k.TextSize=12 k.TextSize=14 k.TextWrapped=true l.Name="Close"l.Parent=b l.BackgroundColor3=Color3.fromRGB(0,150,191)l.BorderSizePixel=0 l.Position=UDim2.new(0.875,0,0,0)l.Size=UDim2.new(0,27,0,27)l.Font=Enum.Font.SourceSans l.Text="X"l.TextColor3=Color3.fromRGB(255,255,255)l.TextSize=12 l.TextSize=14 l.TextWrapped=true l.MouseButton1Click:Connect(function()a:Destroy()end)m.Name="Minimize"m.Parent=b m.BackgroundColor3=Color3.fromRGB(0,150,191)m.BorderSizePixel=0 m.Position=UDim2.new(0.75,0,0,0)m.Size=UDim2.new(0,27,0,27)m.Font=Enum.Font.SourceSans m.Text="-"m.TextColor3=Color3.fromRGB(255,255,255)m.TextSize=12 m.TextSize=14 m.TextWrapped=true function Mini()if(m.Text=="-")then m.Text="+"c.Visible=false elseif(m.Text=="+")then m.Text="-"c.Visible=true end end m.MouseButton1Click:Connect(Mini)n.Name="Fly on"n.Parent=a n.BackgroundColor3=Color3.fromRGB(0,0,0)n.BorderSizePixel=0 n.Position=UDim2.new(0.117647067,0,0.550284624,0)n.Size=UDim2.new(0.148000002,0,0.314999998,0)n.Visible=false n.Active=true n.Draggable=true o.Name="W"o.Parent=n o.BackgroundColor3=Color3.fromRGB(0,150,191)o.BorderSizePixel=0 o.Position=UDim2.new(0.134719521,0,0.0152013302,0)o.Size=UDim2.new(0.708999991,0,0.499000013,0)o.Font=Enum.Font.SourceSans o.Text="^"o.TextColor3=Color3.fromRGB(255,255,255)o.TextSize=12 o.TextSize=14 o.TextWrapped=true o.TouchLongPress:Connect(function()local q=game.Players.LocalPlayer.Character.HumanoidRootPart q.BodyVelocity.Velocity=game.Workspace.CurrentCamera.CFrame.LookVector*e.Text wait(0.1)q.BodyVelocity.Velocity=game.Workspace.CurrentCamera.CFrame.LookVector*e.Text wait(0.1)q.BodyVelocity.Velocity=game.Workspace.CurrentCamera.CFrame.LookVector*e.Text wait(0.1)q.BodyVelocity.Velocity=game.Workspace.CurrentCamera.CFrame.LookVector*e.Text wait(0.1)q.BodyVelocity.Velocity=game.Workspace.CurrentCamera.CFrame.LookVector*e.Text wait(0.1)q.BodyVelocity.Velocity=game.Workspace.CurrentCamera.CFrame.LookVector*e.Text wait(0.1)q.BodyVelocity.Velocity=game.Workspace.CurrentCamera.CFrame.LookVector*e.Text wait(0.1)q.BodyVelocity.Velocity=game.Workspace.CurrentCamera.CFrame.LookVector*e.Text wait(0.1)q.BodyVelocity.Velocity=game.Workspace.CurrentCamera.CFrame.LookVector*e.Text wait(0.1)q.BodyVelocity.Velocity=game.Workspace.CurrentCamera.CFrame.LookVector*e.Text wait(0.1)q.BodyVelocity.Velocity=game.Workspace.CurrentCamera.CFrame.LookVector*0 end)o.MouseButton1Click:Connect(function()local q=game.Players.LocalPlayer.Character.HumanoidRootPart q.BodyVelocity.Velocity=game.Workspace.CurrentCamera.CFrame.LookVector*e.Text wait(0.1)q.BodyVelocity.Velocity=game.Workspace.CurrentCamera.CFrame.LookVector*e.Text wait(0.1)q.BodyVelocity.Velocity=game.Workspace.CurrentCamera.CFrame.LookVector*e.Text wait(0.1)q.BodyVelocity.Velocity=game.Workspace.CurrentCamera.CFrame.LookVector*e.Text wait(0.1)q.BodyVelocity.Velocity=game.Workspace.CurrentCamera.CFrame.LookVector*e.Text wait(0.1)q.BodyVelocity.Velocity=game.Workspace.CurrentCamera.CFrame.LookVector*e.Text wait(0.1)q.BodyVelocity.Velocity=game.Workspace.CurrentCamera.CFrame.LookVector*e.Text wait(0.1)q.BodyVelocity.Velocity=game.Workspace.CurrentCamera.CFrame.LookVector*e.Text wait(0.1)q.BodyVelocity.Velocity=game.Workspace.CurrentCamera.CFrame.LookVector*e.Text wait(0.1)q.BodyVelocity.Velocity=game.Workspace.CurrentCamera.CFrame.LookVector*e.Text wait(0.1)q.BodyVelocity.Velocity=game.Workspace.CurrentCamera.CFrame.LookVector*0 end)p.Name="S"p.Parent=n p.BackgroundColor3=Color3.fromRGB(0,150,191)p.BorderSizePixel=0 p.Position=UDim2.new(0.134000003,0,0.479999989,0)p.Rotation=180 p.Size=UDim2.new(0.708999991,0,0.499000013,0)p.Font=Enum.Font.SourceSans p.Text="^"p.TextColor3=Color3.fromRGB(255,255,255)p.TextSize=12 p.TextSize=14 p.TextWrapped=true p.TouchLongPress:Connect(function()local q=game.Players.LocalPlayer.Character.HumanoidRootPart q.BodyVelocity.Velocity=game.Workspace.CurrentCamera.CFrame.LookVector*-e.Text wait(0.1)q.BodyVelocity.Velocity=game.Workspace.CurrentCamera.CFrame.LookVector*-e.Text wait(0.1)q.BodyVelocity.Velocity=game.Workspace.CurrentCamera.CFrame.LookVector*-e.Text wait(0.1)q.BodyVelocity.Velocity=game.Workspace.CurrentCamera.CFrame.LookVector*-e.Text wait(0.1)q.BodyVelocity.Velocity=game.Workspace.CurrentCamera.CFrame.LookVector*-e.Text wait(0.1)q.BodyVelocity.Velocity=game.Workspace.CurrentCamera.CFrame.LookVector*-e.Text wait(0.1)q.BodyVelocity.Velocity=game.Workspace.CurrentCamera.CFrame.LookVector*-e.Text wait(0.1)q.BodyVelocity.Velocity=game.Workspace.CurrentCamera.CFrame.LookVector*-e.Text wait(0.1)q.BodyVelocity.Velocity=game.Workspace.CurrentCamera.CFrame.LookVector*-e.Text wait(0.1)q.BodyVelocity.Velocity=game.Workspace.CurrentCamera.CFrame.LookVector*-e.Text wait(0.1)q.BodyVelocity.Velocity=game.Workspace.CurrentCamera.CFrame.LookVector*0 end)p.MouseButton1Click:Connect(function()local q=game.Players.LocalPlayer.Character.HumanoidRootPart wait(0.1)q.BodyVelocity.Velocity=game.Workspace.CurrentCamera.CFrame.LookVector*-e.Text wait(0.1)q.BodyVelocity.Velocity=game.Workspace.CurrentCamera.CFrame.LookVector*-e.Text wait(0.1)q.BodyVelocity.Velocity=game.Workspace.CurrentCamera.CFrame.LookVector*-e.Text wait(0.1)q.BodyVelocity.Velocity=game.Workspace.CurrentCamera.CFrame.LookVector*-e.Text wait(0.1)q.BodyVelocity.Velocity=game.Workspace.CurrentCamera.CFrame.LookVector*-e.Text wait(0.1)q.BodyVelocity.Velocity=game.Workspace.CurrentCamera.CFrame.LookVector*-e.Text wait(0.1)q.BodyVelocity.Velocity=game.Workspace.CurrentCamera.CFrame.LookVector*-e.Text wait(0.1)q.BodyVelocity.Velocity=game.Workspace.CurrentCamera.CFrame.LookVector*-e.Text wait(0.1)q.BodyVelocity.Velocity=game.Workspace.CurrentCamera.CFrame.LookVector*-e.Text wait(0.1)q.BodyVelocity.Velocity=game.Workspace.CurrentCamera.CFrame.LookVector*0 end)
+end)
+credits:Button("爬墙", function()
+loadstring(game:HttpGet("https://pastebin.com/raw/zXk4Rq2r"))()
+end)
+credits:Button("踏空行走", function()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/GhostPlayer352/Test4/main/Float"))()
+end)
+credits:Button("贴墙跳(装跑酷大神)", function()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/bluer0455/SAR_SangRui/refs/heads/main/WallHop-V4-SARHANGHUA"))()
+end)
+credits:Button("铁拳", function()
+ loadstring(game:HttpGet('https://raw.githubusercontent.com/0Ben1/fe/main/obf_rf6iQURzu1fqrytcnLBAvW34C9N55kS9g9G3CKz086rC47M6632sEd4ZZYB0AYgV.lua.txt'))()
+ end)
+credits:Button("隐身", function()
+loadstring(game:HttpGet("https://pastebin.com/raw/3Rnd9rHf"))()
+end)
+local creds = window:Tab("玩家选择和自瞄", "6031097229")
+local credits = creds:section("玩家选择", true)
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local StarterGui = game:GetService("StarterGui")
+local Cam = workspace.CurrentCamera;
+local LocalPlayer = Players.LocalPlayer;
+local aimbotEnabled = false;
+local fovRadius = 30;
+local smoothFactor = 1;
+local currentTarget = "all"
+local targetPlayer = nil;
+local targetDropdown;
+local FOVring = Drawing.new("Circle")
+FOVring.Visible = false;
+FOVring.Thickness = 2;
+FOVring.Color = Color3.fromRGB(231, 231, 236)
+FOVring.Filled = false;
+FOVring.Radius = fovRadius;
+FOVring.Position = Cam.ViewportSize / 2;
+local spectateConnection = nil;
+local defaultCameraType = Cam.CameraType;
+local defaultCameraSubject = Cam.CameraSubject;
+local spectating = false;
+local function updateDrawings()
+FOVring.Position = Cam.ViewportSize / 2;
+end
+local function getClosestPlayerInFOV(trg_part)
+local nearest = nil;
+local last = math.huge;
+local playerMousePos = Cam.ViewportSize / 2;
+local targetList = {}
+if (currentTarget == "all") then
+    for _, player in ipairs(Players:GetPlayers()) do
+        if (player ~= LocalPlayer) then
+            table.insert(targetList, player)
+        end
+	end
+elseif (targetPlayer and targetPlayer.Character) then
+    table.insert(targetList, targetPlayer)
+end
+for _, player in ipairs(targetList) do
+    if player.Character then
+		local part = player.Character:FindFirstChild(trg_part)
+        if part then
+            local ePos, isVisible = Cam:WorldToViewportPoint(part.Position)
+			local distance = (Vector2.new(ePos.x, ePos.y) - playerMousePos).Magnitude;
+            if ((distance < last) and isVisible and (distance < fovRadius)) then
+				last = distance;
+                nearest = player;
+            end
+        end
+	end
+end
+return nearest;
+end
+local function updatePlayerList()
+local options = {"所有玩家"}
+for _, player in ipairs(Players:GetPlayers()) do
+    if (player ~= LocalPlayer) then
+        local name = player.Name;
+        if (player.DisplayName ~= name) then
+            name = name .. "(" .. player.DisplayName .. ")"
+        end
+        table.insert(options, name)
+    end
+end
+if targetDropdown then
+    targetDropdown:SetOptions(options)
+    if ((currentTarget == "single") and (not targetPlayer or not Players:FindFirstChild(targetPlayer.Name))) then
+		currentTarget = "all"
+		targetPlayer = nil;
+        targetDropdown:SetTitle("目标: 所有玩家")
+    end
+end
+end
+targetDropdown = credits:Dropdown("选择目标玩家", "点击选择目标", {"所有玩家"}, function(selected)
+if (selected == "所有玩家") then
+    currentTarget = "all"
+    targetPlayer = nil;
+	targetDropdown:SetTitle("目标: 所有玩家")
+else
+local username = selected:match("^(.-)%(") or selected;
+username = username:gsub("%s+$", "")
+for _, player in ipairs(Players:GetPlayers()) do
+	if (player.Name == username) then
+        currentTarget = "single"
+        targetPlayer = player;
+        targetDropdown:SetTitle("目标: " .. player.Name .. (((player.DisplayName ~= player.Name) and ("(" .. player.DisplayName .. ")")) or ""))
+        break;
+    end
+end
+end
+end)
+updatePlayerList()
+Players.PlayerAdded:Connect(function()
+task.wait(1)
+updatePlayerList()
+end)
+Players.PlayerRemoving:Connect(function()
+task.wait(0.5)
+updatePlayerList()
+end)
+local aimbotConnection;
+credits:Toggle("开启自瞄", "AimbotToggle", false, function(state)
+aimbotEnabled = state;
+FOVring.Visible = state;
+if state then
+    aimbotConnection = RunService.RenderStepped:Connect(function()
+    updateDrawings()
+    local closest = getClosestPlayerInFOV("Head")
+    if (closest and closest.Character and closest.Character:FindFirstChild("Head")) then
+        local targetPosition = closest.Character.Head.Position;
+        local currentCFrame = Cam.CFrame;
+        local targetCFrame = CFrame.new(currentCFrame.Position, targetPosition)
+        if (smoothFactor >= 4.99) then
+            Cam.CFrame = targetCFrame;
+        else
+        Cam.CFrame = currentCFrame:Lerp(targetCFrame, math.min(smoothFactor, 1))
+    end
+end
+end)
+elseif aimbotConnection then
+    aimbotConnection:Disconnect()
+    aimbotConnection = nil;
+end
+end)
+credits:Slider("自瞄FOV大小", "FOVSizeSlider", fovRadius, 10, 500, false, function(value)
+fovRadius = value;
+FOVring.Radius = value;
+end)
+credits:Slider("自瞄强度", "AimbotSmoothSlider", 100, 1, 500, false, function(value)
+smoothFactor = math.min(value / 100, 5)
+end)
+credits:Button("传送到目标玩家", function()
+if (currentTarget == "all") then
+    StarterGui:SetCore("SendNotification", {Title="错误",Text="当前按钮不支持所有",Duration=3})
+    return;
+end
+if (targetPlayer and targetPlayer.Character and targetPlayer.Character:FindFirstChild("HumanoidRootPart")) then
+    local hrp = targetPlayer.Character.HumanoidRootPart;
+    local char = LocalPlayer.Character;
+    if (char and char:FindFirstChild("HumanoidRootPart")) then
+        char.HumanoidRootPart.CFrame = hrp.CFrame + Vector3.new(0, 5, 0)
+    end
+end
+end)
+credits:Toggle("监视目标玩家视角", "SpectateToggle", false, function(state)
+if (currentTarget == "all") then
+	StarterGui:SetCore("SendNotification", {Title="错误",Text="当前按钮不支持所有",Duration=3})
+    return;
+end
+spectating = state;
+if state then
+    if (targetPlayer and targetPlayer.Character) then
+        defaultCameraType = Cam.CameraType;
+        defaultCameraSubject = Cam.CameraSubject;
+        Cam.CameraType = Enum.CameraType.Custom;
+        Cam.CameraSubject = targetPlayer.Character:WaitForChild("Humanoid", 5)
+        if Cam.CameraSubject then
+            local distance = 10;
+            local angle = 0;
+            spectateConnection = RunService.RenderStepped:Connect(function()
+            if not spectating then
+                return;
+            end
+            if (not targetPlayer or not targetPlayer.Character) then
+                spectateConnection:Disconnect()
+                return;
+            end
+            local rootPart = targetPlayer.Character:FindFirstChild("HumanoidRootPart")
+            if not rootPart then
+                return;
+            end
+            if (LocalPlayer:GetMouse().WheelForward > 0) then
+                distance = math.max(1, distance - 1)
+            elseif (LocalPlayer:GetMouse().WheelBackward > 0) then
+                distance = math.min(50, distance + 1)
+            end
+            local offset = Vector3.new(math.sin(angle) * distance, 3, math.cos(angle) * distance)
+            Cam.CFrame = CFrame.new(rootPart.Position + offset, rootPart.Position + Vector3.new(0, 2, 0))
+        end)
+    end
+end
+else
+if spectateConnection then
+    spectateConnection:Disconnect()
+    spectateConnection = nil;
+end
+Cam.CameraType = defaultCameraType;
+Cam.CameraSubject = defaultCameraSubject;
+end
+end)
+credits:Button("复制玩家用户名", function()
+    if (currentTarget == "all") then
+        StarterGui:SetCore("SendNotification", {Title="错误",Text="请先选择特定玩家",Duration=3})
+        return
+    end
+    
+    if targetPlayer then
+        setclipboard(targetPlayer.Name)
+        StarterGui:SetCore("SendNotification", {
+            Title="成功",
+            Text=("已复制用户名: " .. targetPlayer.Name),
+            Duration=3
+        })
+    end
+end)
+
+credits:Button("复制玩家昵称", function()
+    if (currentTarget == "all") then
+        StarterGui:SetCore("SendNotification", {Title="错误",Text="请先选择特定玩家",Duration=3})
+        return
+    end
+    
+    if targetPlayer then
+        setclipboard(targetPlayer.DisplayName)
+        StarterGui:SetCore("SendNotification", {
+            Title="成功",
+            Text=("已复制昵称: " .. targetPlayer.DisplayName),
+            Duration=3
+        })
+    end
+end)
+local creds = window:Tab("ESP透视", "6031097229")
+local credits = creds:section("ESP", true)
+local playerESPEnabled = false;
+local playerDistanceEnabled = false;
+local playerNameEnabled = false;
+local playerLineEnabled = false;
+local playerHighlights = {}
+local playerBillboards = {}
+local playerLines = {}
+local playerESPConnection = nil;
+local playerAddedConnection = nil;
+local playerRemovingConnection = nil;
+local characterConnections = {}
+local camera = workspace.CurrentCamera;
+local function clearPlayerESP(player)
+if playerHighlights[player] then
+    playerHighlights[player]:Destroy()
+    playerHighlights[player] = nil;
+end
+if playerBillboards[player] then
+    playerBillboards[player]:Destroy()
+    playerBillboards[player] = nil;
+end
+if playerLines[player] then
+    if playerLines[player].Line then
+        playerLines[player].Line:Remove()
+        playerLines[player].Line = nil;
+    end
+    playerLines[player] = nil;
+end
+if characterConnections[player] then
+    for _, connection in pairs(characterConnections[player]) do
+        connection:Disconnect()
+    end
+    characterConnections[player] = nil;
+end
+end
+local function clearAllESP()
+local playersToClear = {}
+for player, _ in pairs(playerHighlights) do
+    playersToClear[player] = true;
+end
+for player, _ in pairs(playerBillboards) do
+    playersToClear[player] = true;
+end
+for player, _ in pairs(playerLines) do
+    playersToClear[player] = true;
+end
+for player, _ in pairs(playersToClear) do
+    clearPlayerESP(player)
+end
+end
+local function createPlayerESP(player)
+if (player == game.Players.LocalPlayer) then
+	return;
+end
+local character = player.Character;
+if not character then
+    return;
+end
+local humanoidRootPart = character:FindFirstChild("HumanoidRootPart")
+if not humanoidRootPart then
+    return;
+end
+clearPlayerESP(player)
+if playerESPEnabled then
+    local highlight = Instance.new("Highlight")
+    highlight.Name = "PlayerHighlight"
+    highlight.Adornee = character;
+    highlight.FillColor = Color3.new(1, 1, 1)
+    highlight.FillTransparency = 0.5;
+    highlight.OutlineColor = Color3.new(0.8, 0.8, 0.8)
+    highlight.OutlineTransparency = 0;
+    highlight.Parent = character;
+    playerHighlights[player] = highlight;
+end
+if (playerDistanceEnabled or playerNameEnabled) then
+	local billboard = Instance.new("BillboardGui")
+    billboard.Name = "PlayerInfo"
+    billboard.Adornee = humanoidRootPart;
+    billboard.Size = UDim2.new(0, 150, 0, 40)
+    billboard.StudsOffset = Vector3.new(0, 2, 0)
+	billboard.AlwaysOnTop = true;
+    billboard.Parent = humanoidRootPart;
+	if playerDistanceEnabled then
+        local distanceText = Instance.new("TextLabel")
+        distanceText.Name = "Distance"
+        distanceText.BackgroundTransparency = 1;
+		distanceText.Size = UDim2.new(1, 0, 0.5, 0)
+        distanceText.Position = UDim2.new(0, 0, 0.5, 0)
+        distanceText.Font = Enum.Font.GothamSemibold;
+        distanceText.TextColor3 = Color3.new(1, 1, 1)
+        distanceText.TextStrokeTransparency = 0;
+		distanceText.TextStrokeColor3 = Color3.new(0, 0, 0)
+        distanceText.TextSize = 14;
+        distanceText.Text = ""
+        distanceText.Parent = billboard;
+    end
+    if playerNameEnabled then
+        local nameText = Instance.new("TextLabel")
+        nameText.Name = "Name"
+        nameText.BackgroundTransparency = 1;
+        nameText.Size = UDim2.new(1, 0, 0.5, 0)
+        nameText.Position = UDim2.new(0, 0, 0, 0)
+        nameText.Font = Enum.Font.GothamBold;
+        nameText.TextColor3 = Color3.new(1, 1, 1)
+        nameText.TextStrokeTransparency = 0;
+        nameText.TextStrokeColor3 = Color3.new(0, 0, 0)
+		nameText.TextSize = 14;
+        nameText.Text = player.Name;
+        nameText.Parent = billboard;
+    end
+    playerBillboards[player] = billboard;
+end
+if playerLineEnabled then
+    local line = Drawing.new("Line")
+    line.Visible = true;
+    line.From = Vector2.new(camera.ViewportSize.X / 2, camera.ViewportSize.Y)
+	line.To = Vector2.new(0, 0)
+    line.Color = Color3.new(1, 1, 1)
+    line.Thickness = 1;
+    line.Transparency = 1;
+    playerLines[player] = {Line=line,TargetPart=humanoidRootPart}
+end
+if not characterConnections[player] then
+    characterConnections[player] = {}
+end
+local humanoid = character:FindFirstChild("Humanoid")
+if humanoid then
+    table.insert(characterConnections[player], humanoid.Died:Connect(function()
+	clearPlayerESP(player)
+end))
+end
+table.insert(characterConnections[player], character.AncestryChanged:Connect(function()
+if not character.Parent then
+    clearPlayerESP(player)
+end
+end))
+end
+local function setupPlayerConnections()
+if playerAddedConnection then
+    playerAddedConnection:Disconnect()
+end
+if playerRemovingConnection then
+    playerRemovingConnection:Disconnect()
+end
+playerAddedConnection = game.Players.PlayerAdded:Connect(function(player)
+player.CharacterAdded:Connect(function(character)
+wait(0.1)
+if (playerESPEnabled or playerDistanceEnabled or playerNameEnabled or playerLineEnabled) then
+    createPlayerESP(player)
+end
+end)
+if player.Character then
+    wait(0.1)
+	if (playerESPEnabled or playerDistanceEnabled or playerNameEnabled or playerLineEnabled) then
+        createPlayerESP(player)
+    end
+end
+end)
+playerRemovingConnection = game.Players.PlayerRemoving:Connect(function(player)
+clearPlayerESP(player)
+end)
+for _, player in ipairs(game.Players:GetPlayers()) do
+    if (player ~= game.Players.LocalPlayer) then
+        player.CharacterAdded:Connect(function(character)
+		wait(0.1)
+        if (playerESPEnabled or playerDistanceEnabled or playerNameEnabled or playerLineEnabled) then
+            createPlayerESP(player)
+        end
+    end)
+    if player.Character then
+        wait(0.1)
+		if (playerESPEnabled or playerDistanceEnabled or playerNameEnabled or playerLineEnabled) then
+			createPlayerESP(player)
+        end
+	end
+end
+end
+end
+local function updateAllPlayerESP()
+clearAllESP()
+if (not playerESPEnabled and not playerDistanceEnabled and not playerNameEnabled and not playerLineEnabled) then
+    if playerESPConnection then
+        playerESPConnection:Disconnect()
+        playerESPConnection = nil;
+    end
+    return;
+end
+for _, player in ipairs(game.Players:GetPlayers()) do
+    if ((player ~= game.Players.LocalPlayer) and player.Character) then
+        createPlayerESP(player)
+	end
+end
+setupPlayerConnections()
+if not playerESPConnection then
+	playerESPConnection = game:GetService("RunService").RenderStepped:Connect(function()
+    updatePlayerInfo()
+end)
+end
+end
+function updatePlayerInfo()
+local localPlayer = game.Players.LocalPlayer;
+local localCharacter = localPlayer.Character;
+if not localCharacter then
+    return;
+end
+local localRoot = localCharacter:FindFirstChild("HumanoidRootPart")
+if not localRoot then
+    return;
+end
+for player, billboard in pairs(playerBillboards) do
+    if (player.Character and player.Character:FindFirstChild("HumanoidRootPart")) then
+		local humanoidRootPart = player.Character.HumanoidRootPart;
+		if playerDistanceEnabled then
+            local distanceLabel = billboard:FindFirstChild("Distance")
+            if distanceLabel then
+                local distance = (humanoidRootPart.Position - localRoot.Position).Magnitude;
+				distanceLabel.Text = string.format("%.1f米", distance)
+            end
+        end
+        if playerNameEnabled then
+            local nameLabel = billboard:FindFirstChild("Name")
+            if nameLabel then
+                nameLabel.Text = player.Name;
+            end
+        end
+    end
+end
+for player, lineInfo in pairs(playerLines) do
+    if (player.Character and player.Character:FindFirstChild("HumanoidRootPart") and lineInfo.Line) then
+        local line = lineInfo.Line;
+        local targetPart = player.Character.HumanoidRootPart;
+        local worldPosition = targetPart.Position + Vector3.new(0, 1.5, 0)
+        local screenPosition, onScreen = camera:WorldToViewportPoint(worldPosition)
+        if onScreen then
+            line.From = Vector2.new(camera.ViewportSize.X / 2, camera.ViewportSize.Y)
+            line.To = Vector2.new(screenPosition.X, screenPosition.Y)
+            line.Visible = true;
+        else
+		line.Visible = false;
+    end
+elseif (lineInfo and lineInfo.Line) then
+	lineInfo.Line.Visible = false;
+end
+end
+end
+local function toggleESPFeature()
+if (not playerESPEnabled and not playerDistanceEnabled and not playerNameEnabled and not playerLineEnabled) then
+    if playerESPConnection then
+		playerESPConnection:Disconnect()
+        playerESPConnection = nil;
+    end
+	clearAllESP()
+else
+updateAllPlayerESP()
+end
+end
+credits:Toggle("玩家高亮", "PlayerHighlight", false, function(state)
+playerESPEnabled = state;
+toggleESPFeature()
+end)
+credits:Toggle("显示玩家距离", "PlayerDistance", false, function(state)
+playerDistanceEnabled = state;
+toggleESPFeature()
+end)
+credits:Toggle("显示玩家用户名", "PlayerName", false, function(state)
+playerNameEnabled = state;
+toggleESPFeature()
+end)
+credits:Toggle("玩家指引线", "PlayerLine", false, function(state)
+playerLineEnabled = state;
+toggleESPFeature()
+end)
+
+local creds = window:Tab("光影", "6031097229")
+local credits = creds:section("光影", true)
+credits:Button("动态模糊(转动视角模糊)", function()
+local camera = workspace.CurrentCamera;
+local blurAmount = 10;
+local blurAmplifier = 5;
+local lastVector = camera.CFrame.LookVector;
+local motionBlur = Instance.new("BlurEffect", camera)
+local runService = game:GetService("RunService")
+workspace:GetPropertyChangedSignal("CurrentCamera"):Connect(function()
+local camera = workspace.CurrentCamera;
+if (motionBlur and motionBlur.Parent) then
+    motionBlur.Parent = camera;
+else
+motionBlur = Instance.new("BlurEffect", camera)
+end
+end)
+runService.Heartbeat:Connect(function(deltaTime)
+local magnitude = (camera.CFrame.LookVector - lastVector).Magnitude;
+motionBlur.Size = (math.abs(magnitude) * blurAmount * blurAmplifier) / 2;
+lastVector = camera.CFrame.LookVector;
+end)
+end)
+credits:Button("光影(晴郎效果)", function()
+loadstring(game:HttpGet("https://rawscripts.net/raw/Universal-Script-Shader-Customizable-39161"))()
+end)
+credits:Button("光影(黄昏效果)", function()
+loadstring(game:HttpGet("https://pastebin.com/raw/Zpaf00Nu"))()
+end)
+credits:Button("光影(画质提高)", function()
+local light = game.Lighting;
+for i, v in pairs(light:GetChildren()) do
+    v:Destroy()
+end
+local ter = workspace.Terrain;
+local color = Instance.new("ColorCorrectionEffect")
+local bloom = Instance.new("BloomEffect")
+local sun = Instance.new("SunRaysEffect")
+local blur = Instance.new("BlurEffect")
+color.Parent = light;
+bloom.Parent = light;
+sun.Parent = light;
+blur.Parent = light;
+color.Enabled = true;
+bloom.Enabled = true;
+sun.Enabled = true;
+blur.Enabled = true;
+color.Contrast = 0.15;
+color.Brightness = 0.1;
+color.Saturation = 0.25;
+color.TintColor = Color3.fromRGB(255, 222, 211)
+bloom.Intensity = 0.1;
+bloom.Size = 56;
+bloom.Threshold = 0.9;
+sun.Intensity = 0.14;
+sun.Spread = 0.35;
+blur.Size = 2;
+end)
+credits:Button("光影(画质提高)2", function()
+loadstring(game:HttpGet("https://pastebin.com/raw/jHBfJYmS"))()
+end)
+credits:Button("光影(超好用合集！光影好看)", function()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/p0e1/1/refs/heads/main/SimpleShader.lua"))()
+end)
+credits:Button("光影(超好用合集！功能更多)", function()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/randomstring0/pshade-ultimate/refs/heads/main/src/back.json"))()
+end)
+local creds = window:Tab("动画区", "6031097229")
+local credits = creds:section("其他动画脚本", false)
+credits:Button("Xsar动画ID提取和自定义动画包", function()
+loadstring(game:HttpGet(('https://pastebin.com/raw/RnGZvEZJ')))()
+end)
+
+credits:Button("r15动画包加表情动作(国外最强)", function()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/BeemTZy/Motiona/refs/heads/main/source.lua"))()
+end)
+credits:Button("r6和r15动画ID(动画超多)", function()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/ExploitFin/AquaMatrix/refs/heads/AquaMatrix/AquaMatrix"))()
+end)
+credits:Button("r15鹿管", function()
+loadstring(game:HttpGet("https://pastefy.app/YZoglOyJ/raw"))()
+end)
+credits:Button("r6鹿管", function()
+loadstring(game:HttpGet("https://pastefy.app/wa3v2Vgm/raw"))()
+end)
+local credits = creds:section("自定义r15动画包", false)
+credits:Label("部分服务器会不生效and部分不可以用")
+credits:Label("有的动画包没有")
+local walkDropdown = credits:Dropdown("选择走路动画", "点击选择要修改的走路动画包", {"吸血鬼动画包","宇航员动画包","泡泡动画包","卡通动画包","长者动画包","骑士动画包","悬浮动画包","法师动画包","忍者动画包","海盗动画包","机器人动画包","时尚动画包","超级英雄动画包","玩具动画包","狼人动画包","僵尸动画包","巡逻动画包","自信动画包","流行明星动画包","牛仔动画包","幽灵动画包","鬼鬼祟祟动画包","公主动画包","阿迪达斯运动动画包","超级流行动画包","美国国家橄榄球联盟动画包","大胆动画包","无界限动画包","复古动画包","猫步魅力动画包","风格化女性动画包","写实动画包","厕所先生动画包","Rthro风格动画包","默认动画包","小偷动画包","鬼动画包","清除动画"}, function(selected)
+local player = game.Players.LocalPlayer;
+local character = player.Character or player.CharacterAdded:Wait()
+local Animate = character:WaitForChild("Animate")
+local walkAnimationIDs = {["吸血鬼动画包"]="1083473930",["宇航员动画包"]="891667138",["泡泡动画包"]="910034870",["卡通动画包"]="742640026",["长者动画包"]="845403856",["骑士动画包"]="657552124",["悬浮动画包"]="616013216",["法师动画包"]="707897309",["忍者动画包"]="656121766",["海盗动画包"]="750785693",["机器人动画包"]="616095330",["时尚动画包"]="616146177",["超级英雄动画包"]="616122287",["玩具动画包"]="782843345",["狼人动画包"]="1083178339",["僵尸动画包"]="616168032",["巡逻动画包"]="1151231493",["自信动画包"]="1070017263",["流行明星动画包"]="1212980338",["牛仔动画包"]="1014421541",["幽灵动画包"]="616013216",["鬼鬼祟祟动画包"]="1132510133",["公主动画包"]="941028902",["阿迪达斯运动动画包"]="18537392113",["超级流行动画包"]="92072849924640",["美国国家橄榄球联盟动画包"]="110358958299415",["大胆动画包"]="16738340646",["无界限动画包"]="18747074203",["复古动画包"]="10921244891",["猫步魅力动画包"]="109168724482748",["风格化女性动画包"]="4708193840",["写实动画包"]="11600249883",["厕所先生动画包"]="10921269718",["Rthro风格动画包"]="10921269718",["默认动画包"]="913402848",["小偷动画包"]="1132510133",["鬼动画包"]="616013216",["清除动画"]="0"}
+if walkAnimationIDs[selected] then
+    if (selected == "清除动画") then
+        Animate.walk.WalkAnim.AnimationId = "http://www.roblox.com/asset/?id=0"
+    else
+    Animate.walk.WalkAnim.AnimationId = "http://www.roblox.com/asset/?id=" .. walkAnimationIDs[selected]
+end
+walkDropdown:SetTitle("走路动画包(" .. selected .. ")")
+end
+end)
+local runDropdown = credits:Dropdown("选择跑步动画", "点击选择要修改的跑步动画包", {"吸血鬼动画包","宇航员动画包","泡泡动画包","卡通动画包","长者动画包","骑士动画包","悬浮动画包","法师动画包","忍者动画包","海盗动画包","机器人动画包","时尚动画包","超级英雄动画包","玩具动画包","狼人动画包","僵尸动画包","巡逻动画包","自信动画包","流行明星动画包","牛仔动画包","幽灵动画包","鬼鬼祟祟动画包","公主动画包","阿迪达斯运动动画包","超级流行动画包","美国国家橄榄球联盟动画包","大胆动画包","无界限动画包","复古动画包","猫步魅力动画包","风格化女性动画包","写实动画包","厕所先生动画包","Rthro风格动画包","默认动画包","小偷动画包","鬼动画包","清除动画"}, function(selected)
+local player = game.Players.LocalPlayer;
+local character = player.Character or player.CharacterAdded:Wait()
+local Animate = character:WaitForChild("Animate")
+local runAnimationIDs = {["吸血鬼动画包"]="1083462077",["宇航员动画包"]="891636393",["泡泡动画包"]="910025107",["卡通动画包"]="742638842",["长者动画包"]="845386501",["骑士动画包"]="657564596",["悬浮动画包"]="616010382",["法师动画包"]="707861613",["忍者动画包"]="656118852",["海盗动画包"]="750783738",["机器人动画包"]="616091570",["时尚动画包"]="616140816",["超级英雄动画包"]="616117076",["玩具动画包"]="782842708",["狼人动画包"]="1083216690",["僵尸动画包"]="616163682",["巡逻动画包"]="1150967949",["自信动画包"]="1070001516",["流行明星动画包"]="1212980348",["牛仔动画包"]="1014401683",["幽灵动画包"]="616013216",["鬼鬼祟祟动画包"]="1132494274",["公主动画包"]="941015281",["阿迪达斯运动动画包"]="1853738490",["超级流行动画包"]="72301599441680",["美国国家橄榄球联盟动画包"]="117333533048078",["大胆动画包"]="16738337225",["无界限动画包"]="18747070484",["复古动画包"]="10921240218",["猫步魅力动画包"]="81024476153754",["风格化女性动画包"]="470819270",["写实动画包"]="11600211410",["厕所先生动画包"]="4417979645",["Rthro风格动画包"]="10921261968",["默认动画包"]="913376220",["小偷动画包"]="1132494274",["鬼动画包"]="616013216",["清除动画"]="0"}
+if runAnimationIDs[selected] then
+    if (selected == "清除动画") then
+        Animate.run.RunAnim.AnimationId = "http://www.roblox.com/asset/?id=0"
+    else
+    Animate.run.RunAnim.AnimationId = "http://www.roblox.com/asset/?id=" .. runAnimationIDs[selected]
+end
+runDropdown:SetTitle("跑步动画包(" .. selected .. ")")
+end
+end)
+local jumpDropdown = credits:Dropdown("选择跳跃动画", "点击选择要修改的跳跃动画包", {"吸血鬼动画包","宇航员动画包","泡泡动画包","卡通动画包","长者动画包","骑士动画包","悬浮动画包","法师动画包","忍者动画包","海盗动画包","机器人动画包","时尚动画包","超级英雄动画包","玩具动画包","狼人动画包","僵尸动画包","巡逻动画包","自信动画包","流行明星动画包","牛仔动画包","幽灵动画包","鬼鬼祟祟动画包","公主动画包","阿迪达斯运动动画包","超级流行动画包","美国国家橄榄球联盟动画包","大胆动画包","无界限动画包","复古动画包","猫步魅力动画包","风格化女性动画包","写实动画包","厕所先生动画包","Rthro风格动画包","默认动画包","小偷动画包","鬼动画包","清除动画"}, function(selected)
+local player = game.Players.LocalPlayer;
+local character = player.Character or player.CharacterAdded:Wait(5)
+if not character then
+    return;
+end
+local Animate = character:WaitForChild("Animate", 3)
+if not Animate then
+    return;
+end
+local jumpIDs = {["吸血鬼动画包"]="1083455352",["宇航员动画包"]="891627522",["泡泡动画包"]="910016857",["卡通动画包"]="742637942",["长者动画包"]="845398858",["骑士动画包"]="658409194",["悬浮动画包"]="616008936",["法师动画包"]="707853694",["忍者动画包"]="656117878",["海盗动画包"]="750782230",["机器人动画包"]="616090535",["时尚动画包"]="616139451",["超级英雄动画包"]="616115533",["玩具动画包"]="782847020",["狼人动画包"]="1083218792",["僵尸动画包"]="616161997",["巡逻动画包"]="1148811837",["自信动画包"]="1069984524",["流行明星动画包"]="1212954642",["牛仔动画包"]="1014394726",["幽灵动画包"]="616008936",["鬼鬼祟祟动画包"]="1132489853",["公主动画包"]="941008832",["阿迪达斯运动动画包"]="18537380791",["超级流行动画包"]="104325245285198",["美国国家橄榄球联盟动画包"]="119846112151352",["大胆动画包"]="16738336650",["无界限动画包"]="18747069148",["复古动画包"]="1092124201",["猫步魅力动画包"]="116936326516985",["风格化女性动画包"]="470818802",["写实动画包"]="11600210487",["厕所先生动画包"]="10921263860",["Rthro风格动画包"]="10921263860",["默认动画包"]="507765000",["小偷动画包"]="1132489853",["鬼动画包"]="616008936",["清除动画"]="0"}
+if jumpIDs[selected] then
+    if (selected == "清除动画") then
+        Animate.jump.JumpAnim.AnimationId = "http://www.roblox.com/asset/?id=0"
+    else
+    Animate.jump.JumpAnim.AnimationId = "http://www.roblox.com/asset/?id=" .. jumpIDs[selected]
+end
+jumpDropdown:SetTitle("跳跃动画包(" .. selected .. ")")
+end
+end)
+local standDropdown = credits:Dropdown("选择站立动画", "点击选择要修改的站立动画包", {"吸血鬼动画包","宇航员动画包","泡泡动画包","卡通动画包","长者动画包","骑士动画包","悬浮动画包","法师动画包","忍者动画包","海盗动画包","机器人动画包","时尚动画包","超级英雄动画包","玩具动画包","狼人动画包","僵尸动画包","巡逻动画包","自信动画包","流行明星动画包","牛仔动画包","幽灵动画包","鬼鬼祟祟动画包","公主动画包","阿迪达斯运动动画包","超级流行动画包","美国国家橄榄球联盟动画包","大胆动画包","无界限动画包","复古动画包","猫步魅力动画包","风格化女性动画包","写实动画包","厕所先生动画包","Rthro风格动画包","默认动画包","小偷动画包","鬼动画包","清除动画"}, function(selected)
+local player = game.Players.LocalPlayer;
+local character = player.Character or player.CharacterAdded:Wait(10)
+if not character then
+	return;
+end
+local Animate = character:WaitForChild("Animate", 10)
+if not Animate then
+    return;
+end
+local standIDs = {["吸血鬼动画包"]="1083445855",["宇航员动画包"]="891621366",["泡泡动画包"]="910004836",["卡通动画包"]="742637544",["长者动画包"]="845397899",["骑士动画包"]="657595757",["悬浮动画包"]="616006778",["法师动画包"]="707742142",["忍者动画包"]="656117400",["海盗动画包"]="750781874",["机器人动画包"]="616088211",["时尚动画包"]="616136790",["超级英雄动画包"]="616111295",["玩具动画包"]="782841498",["狼人动画包"]="1083195517",["僵尸动画包"]="616158929",["巡逻动画包"]="1149612882",["自信动画包"]="1069977950",["流行明星动画包"]="1212900985",["牛仔动画包"]="1014390418",["幽灵动画包"]="616006778",["鬼鬼祟祟动画包"]="1132473842",["公主动画包"]="941003647",["阿迪达斯运动动画包"]="1853737649",["超级流行动画包"]="118832222982049",["美国国家橄榄球联盟动画包"]="92080889861410",["大胆动画包"]="16738333868",["无界限动画包"]="18747067405",["复古动画包"]="10921230744",["猫步魅力动画包"]="119377220967554",["风格化女性动画包"]="4708192150",["写实动画包"]="1717301424",["厕所先生动画包"]="441797862",["Rthro风格动画包"]="10921258489",["默认动画包"]="507766666",["小偷动画包"]="1132473842",["鬼动画包"]="616006778",["清除动画"]="0"}
+if standIDs[selected] then
+    if (selected == "清除动画") then
+        Animate.idle.Animation1.AnimationId = "http://www.roblox.com/asset/?id=0"
+        Animate.idle.Animation2.AnimationId = "http://www.roblox.com/asset/?id=0"
+    else
+    Animate.idle.Animation1.AnimationId = "http://www.roblox.com/asset/?id=" .. standIDs[selected]
+	local baseId = standIDs[selected]:match("%d+")
+    if baseId then
+        Animate.idle.Animation2.AnimationId = "http://www.roblox.com/asset/?id=" .. (tonumber(baseId) + 1)
+    end
+end
+standDropdown:SetTitle("站立动画包(" .. selected .. ")")
+end
+end)
+local fallDropdown = credits:Dropdown("选择下坠动画", "点击选择要修改的下坠动画包", {"吸血鬼动画包","宇航员动画包","泡泡动画包","卡通动画包","长者动画包","骑士动画包","悬浮动画包","法师动画包","忍者动画包","海盗动画包","机器人动画包","时尚动画包","超级英雄动画包","玩具动画包","狼人动画包","僵尸动画包","巡逻动画包","自信动画包","流行明星动画包","牛仔动画包","幽灵动画包","鬼鬼祟祟动画包","公主动画包","阿迪达斯运动动画包","超级流行动画包","美国国家橄榄球联盟动画包","大胆动画包","无界限动画包","复古动画包","猫步魅力动画包","风格化女性动画包","写实动画包","厕所先生动画包","Rthro风格动画包","默认动画包","小偷动画包","鬼动画包","清除动画"}, function(selected)
+local player = game.Players.LocalPlayer;
+local character = player.Character or player.CharacterAdded:Wait(10)
+if not character then
+    return;
+end
+local Animate = character:WaitForChild("Animate", 10)
+if not Animate then
+    return;
+end
+local fallIDs = {["吸血鬼动画包"]="1083443587",["宇航员动画包"]="891617961",["泡泡动画包"]="910001910",["卡通动画包"]="742637151",["长者动画包"]="845396048",["骑士动画包"]="657600338",["悬浮动画包"]="616005863",["法师动画包"]="707829716",["忍者动画包"]="656115606",["海盗动画包"]="750780242",["机器人动画包"]="616087089",["时尚动画包"]="616134815",["超级英雄动画包"]="616108001",["玩具动画包"]="782846423",["狼人动画包"]="1083189019",["僵尸动画包"]="616157476",["巡逻动画包"]="1148863382",["自信动画包"]="1069973677",["流行明星动画包"]="1212900995",["牛仔动画包"]="1014384571",["幽灵动画包"]="616005863",["鬼鬼祟祟动画包"]="1132469004",["公主动画包"]="941000007",["阿迪达斯运动动画包"]="1853736728",["超级流行动画包"]="121152442762481",["美国国家橄榄球联盟动画包"]="129773241321032",["大胆动画包"]="16738333171",["无界限动画包"]="18747062535",["复古动画包"]="10921241244",["猫步魅力动画包"]="92294537340807",["风格化女性动画包"]="470818616",["写实动画包"]="11600206437",["厕所先生动画包"]="10921262864",["Rthro风格动画包"]="10921262864",["默认动画包"]="507767968",["小偷动画包"]="1132469004",["鬼动画包"]="616005863",["清除动画"]="0"}
+if fallIDs[selected] then
+    if (selected == "清除动画") then
+        Animate.fall.FallAnim.AnimationId = "http://www.roblox.com/asset/?id=0"
+    else
+    Animate.fall.FallAnim.AnimationId = "http://www.roblox.com/asset/?id=" .. fallIDs[selected]
+end
+fallDropdown:SetTitle("下坠动画包(" .. selected .. ")")
+end
+end)
+local climbDropdown = credits:Dropdown("选择攀爬动画", "点击选择要修改的攀爬动画包", {"吸血鬼动画包","宇航员动画包","卡通动画包","长者动画包","骑士动画包","悬浮动画包","法师动画包","忍者动画包","海盗动画包","机器人动画包","时尚动画包","超级英雄动画包","玩具动画包","狼人动画包","僵尸动画包","巡逻动画包","自信动画包","牛仔动画包","幽灵动画包","鬼鬼祟祟动画包","公主动画包","阿迪达斯运动动画包","复古动画包","风格化女性动画包","写实动画包","厕所先生动画包","Rthro风格动画包","默认动画包","小偷动画包","鬼动画包","清除动画"}, function(selected)
+local player = game.Players.LocalPlayer;
+local character = player.Character or player.CharacterAdded:Wait(10)
+if not character then
+    return;
+end
+local Animate = character:WaitForChild("Animate", 10)
+if not Animate then
+    return;
+end
+local climbIDs = {["吸血鬼动画包"]="1083439238",["宇航员动画包"]="891609353",["卡通动画包"]="742636889",["长者动画包"]="845392038",["骑士动画包"]="658360781",["悬浮动画包"]="616003713",["法师动画包"]="707826056",["忍者动画包"]="656114359",["海盗动画包"]="750779899",["机器人动画包"]="616086039",["时尚动画包"]="616133594",["超级英雄动画包"]="616104706",["玩具动画包"]="782843869",["狼人动画包"]="1083182000",["僵尸动画包"]="616156119",["巡逻动画包"]="1148811837",["自信动画包"]="1069946257",["牛仔动画包"]="1014380606",["幽灵动画包"]="616003713",["鬼鬼祟祟动画包"]="1132461372",["公主动画包"]="940996062",["阿迪达斯运动动画包"]="1853736339",["复古动画包"]="10921229866",["风格化女性动画包"]="470818425",["写实动画包"]="11600205519",["厕所先生动画包"]="10921257536",["Rthro风格动画包"]="10921257536",["默认动画包"]="507765644",["小偷动画包"]="1132461372",["鬼动画包"]="616003713",["清除动画"]="0"}
+if climbIDs[selected] then
+    if (selected == "清除动画") then
+        Animate.climb.ClimbAnim.AnimationId = "http://www.roblox.com/asset/?id=0"
+    else
+    Animate.climb.ClimbAnim.AnimationId = "http://www.roblox.com/asset/?id=" .. climbIDs[selected]
+end
+climbDropdown:SetTitle("攀爬动画包(" .. selected .. ")")
+end
+end)
+local credits = creds:section("R15动画包", false) credits:Label("有点小问题") local function applyAnimationPack(character, animations) local Animate = character:WaitForChild("Animate") if not Animate then return end Animate.Disabled = true wait(0.1) Animate.idle.Animation1.AnimationId = animations.idle1 or "" Animate.idle.Animation2.AnimationId = animations.idle2 or "" Animate.walk.WalkAnim.AnimationId = animations.walk or "" Animate.run.RunAnim.AnimationId = animations.run or "" Animate.jump.JumpAnim.AnimationId = animations.jump or "" Animate.climb.ClimbAnim.AnimationId = animations.climb or "" Animate.fall.FallAnim.AnimationId = animations.fall or "" Animate.Disabled = false end
+credits:Button("新版动画包", function() local animations = { idle1 = "http://www.roblox.com/asset/?id=122257458498464", idle2 = "http://www.roblox.com/asset/?id=102357151005774", walk = "http://www.roblox.com/asset/?id=122150855457006", run = "http://www.roblox.com/asset/?id=82598234841035", jump = "http://www.roblox.com/asset/?id=75290611992385", climb = "http://www.roblox.com/asset/?id=88763136693023", fall = "http://www.roblox.com/asset/?id=98600215928904", } local player = game.Players.LocalPlayer if player.Character then applyAnimationPack(player.Character, animations) end player.CharacterAdded:Connect(function(char) applyAnimationPack(char, animations) end) end)
+credits:Button("吸血鬼动画包", function() local animations = { idle1 = "http://www.roblox.com/asset/?id=1083445855", idle2 = "http://www.roblox.com/asset/?id=1083450166", walk = "http://www.roblox.com/asset/?id=1083473930", run = "http://www.roblox.com/asset/?id=1083462077", jump = "http://www.roblox.com/asset/?id=1083455352", climb = "http://www.roblox.com/asset/?id=1083439238", fall = "http://www.roblox.com/asset/?id=1083443587", } local player = game.Players.LocalPlayer if player.Character then applyAnimationPack(player.Character, animations) end player.CharacterAdded:Connect(function(char) applyAnimationPack(char, animations) end) end)
+credits:Button("宇航员动画包", function() local animations = { idle1 = "http://www.roblox.com/asset/?id=891621366", idle2 = "http://www.roblox.com/asset/?id=891633237", walk = "http://www.roblox.com/asset/?id=891667138", run = "http://www.roblox.com/asset/?id=891636393", jump = "http://www.roblox.com/asset/?id=891627522", climb = "http://www.roblox.com/asset/?id=891609353", fall = "http://www.roblox.com/asset/?id=891617961", } local player = game.Players.LocalPlayer if player.Character then applyAnimationPack(player.Character, animations) end player.CharacterAdded:Connect(function(char) applyAnimationPack(char, animations) end) end)
+credits:Button("泡泡动画包", function() local animations = { idle1 = "http://www.roblox.com/asset/?id=910009958", idle2 = "http://www.roblox.com/asset/?id=910034870", walk = "http://www.roblox.com/asset/?id=910034870", run = "http://www.roblox.com/asset/?id=910025107", jump = "http://www.roblox.com/asset/?id=910016857", climb = "http://www.roblox.com/asset/?id=910001910", fall = "http://www.roblox.com/asset/?id=910010292", } local player = game.Players.LocalPlayer if player.Character then applyAnimationPack(player.Character, animations) end player.CharacterAdded:Connect(function(char) applyAnimationPack(char, animations) end) end)
+credits:Button("卡通动画包", function() local animations = { idle1 = "http://www.roblox.com/asset/?id=742637544", idle2 = "http://www.roblox.com/asset/?id=742638445", walk = "http://www.roblox.com/asset/?id=742640026", run = "http://www.roblox.com/asset/?id=742638842", jump = "http://www.roblox.com/asset/?id=742637942", climb = "http://www.roblox.com/asset/?id=742636889", fall = "http://www.roblox.com/asset/?id=742637151", } local player = game.Players.LocalPlayer if player.Character then applyAnimationPack(player.Character, animations) end player.CharacterAdded:Connect(function(char) applyAnimationPack(char, animations) end) end)
+credits:Button("长者动画包", function() local animations = { idle1 = "http://www.roblox.com/asset/?id=845397899", idle2 = "http://www.roblox.com/asset/?id=845400520", walk = "http://www.roblox.com/asset/?id=845403856", run = "http://www.roblox.com/asset/?id=845386501", jump = "http://www.roblox.com/asset/?id=845398858", climb = "http://www.roblox.com/asset/?id=845392038", fall = "http://www.roblox.com/asset/?id=845396048", } local player = game.Players.LocalPlayer if player.Character then applyAnimationPack(player.Character, animations) end player.CharacterAdded:Connect(function(char) applyAnimationPack(char, animations) end) end)
+credits:Button("骑士动画包", function() local animations = { idle1 = "http://www.roblox.com/asset/?id=657595757", idle2 = "http://www.roblox.com/asset/?id=657568135", walk = "http://www.roblox.com/asset/?id=657552124", run = "http://www.roblox.com/asset/?id=657564596", jump = "http://www.roblox.com/asset/?id=658409194", climb = "http://www.roblox.com/asset/?id=657584807", fall = "http://www.roblox.com/asset/?id=657600338", } local player = game.Players.LocalPlayer if player.Character then applyAnimationPack(player.Character, animations) end player.CharacterAdded:Connect(function(char) applyAnimationPack(char, animations) end) end)
+credits:Button("悬浮动画包", function() local animations = { idle1 = "http://www.roblox.com/asset/?id=616006778", idle2 = "http://www.roblox.com/asset/?id=616008087", walk = "http://www.roblox.com/asset/?id=616013216", run = "http://www.roblox.com/asset/?id=616010382", jump = "http://www.roblox.com/asset/?id=616008936", climb = "http://www.roblox.com/asset/?id=616003713", fall = "http://www.roblox.com/asset/?id=616005863", } local player = game.Players.LocalPlayer if player.Character then applyAnimationPack(player.Character, animations) end player.CharacterAdded:Connect(function(char) applyAnimationPack(char, animations) end) end)
+credits:Button("法师动画包", function() local animations = { idle1 = "http://www.roblox.com/asset/?id=707742142", idle2 = "http://www.roblox.com/asset/?id=707855907", walk = "http://www.roblox.com/asset/?id=707897309", run = "http://www.roblox.com/asset/?id=707861613", jump = "http://www.roblox.com/asset/?id=707853694", climb = "http://www.roblox.com/asset/?id=707826056", fall = "http://www.roblox.com/asset/?id=707829716", } local player = game.Players.LocalPlayer if player.Character then applyAnimationPack(player.Character, animations) end player.CharacterAdded:Connect(function(char) applyAnimationPack(char, animations) end) end)
+credits:Button("忍者动画包", function() local animations = { idle1 = "http://www.roblox.com/asset/?id=656117878", idle2 = "http://www.roblox.com/asset/?id=656118341", walk = "http://www.roblox.com/asset/?id=656121766", run = "http://www.roblox.com/asset/?id=656118852", jump = "http://www.roblox.com/asset/?id=656117878", climb = "http://www.roblox.com/asset/?id=656114359", fall = "http://www.roblox.com/asset/?id=656115606", } local player = game.Players.LocalPlayer if player.Character then applyAnimationPack(player.Character, animations) end player.CharacterAdded:Connect(function(char) applyAnimationPack(char, animations) end) end)
+credits:Button("海盗动画包", function() local animations = { idle1 = "http://www.roblox.com/asset/?id=750781874", idle2 = "http://www.roblox.com/asset/?id=750782770", walk = "http://www.roblox.com/asset/?id=750785693", run = "http://www.roblox.com/asset/?id=750783738", jump = "http://www.roblox.com/asset/?id=750782230", climb = "http://www.roblox.com/asset/?id=750779899", fall = "http://www.roblox.com/asset/?id=750780242", } local player = game.Players.LocalPlayer if player.Character then applyAnimationPack(player.Character, animations) end player.CharacterAdded:Connect(function(char) applyAnimationPack(char, animations) end) end)
+credits:Button("机器人动画包", function() local animations = { idle1 = "http://www.roblox.com/asset/?id=616088211", idle2 = "http://www.roblox.com/asset/?id=616089559", walk = "http://www.roblox.com/asset/?id=616095330", run = "http://www.roblox.com/asset/?id=616091570", jump = "http://www.roblox.com/asset/?id=616090535", climb = "http://www.roblox.com/asset/?id=616086039", fall = "http://www.roblox.com/asset/?id=616087089", } local player = game.Players.LocalPlayer if player.Character then applyAnimationPack(player.Character, animations) end player.CharacterAdded:Connect(function(char) applyAnimationPack(char, animations) end) end)
+credits:Button("时尚动画包", function() local animations = { idle1 = "http://www.roblox.com/asset/?id=616136790", idle2 = "http://www.roblox.com/asset/?id=616138447", walk = "http://www.roblox.com/asset/?id=616146177", run = "http://www.roblox.com/asset/?id=616140816", jump = "http://www.roblox.com/asset/?id=616139451", climb = "http://www.roblox.com/asset/?id=616133594", fall = "http://www.roblox.com/asset/?id=616134815", } local player = game.Players.LocalPlayer if player.Character then applyAnimationPack(player.Character, animations) end player.CharacterAdded:Connect(function(char) applyAnimationPack(char, animations) end) end)
+credits:Button("超级英雄动画包", function() local animations = { idle1 = "http://www.roblox.com/asset/?id=616111295", idle2 = "http://www.roblox.com/asset/?id=616113536", walk = "http://www.roblox.com/asset/?id=616123766", run = "http://www.roblox.com/asset/?id=616117076", jump = "http://www.roblox.com/asset/?id=616115533", climb = "http://www.roblox.com/asset/?id=616104706", fall = "http://www.roblox.com/asset/?id=616108001", } local player = game.Players.LocalPlayer if player.Character then applyAnimationPack(player.Character, animations) end player.CharacterAdded:Connect(function(char) applyAnimationPack(char, animations) end) end)
+credits:Button("玩具动画包", function() local animations = { idle1 = "http://www.roblox.com/asset/?id=782841498", idle2 = "http://www.roblox.com/asset/?id=782845736", walk = "http://www.roblox.com/asset/?id=782843345", run = "http://www.roblox.com/asset/?id=782842708", jump = "http://www.roblox.com/asset/?id=782847020", climb = "http://www.roblox.com/asset/?id=782843869", fall = "http://www.roblox.com/asset/?id=782846423", } local player = game.Players.LocalPlayer if player.Character then applyAnimationPack(player.Character, animations) end player.CharacterAdded:Connect(function(char) applyAnimationPack(char, animations) end) end)
+credits:Button("狼人动画包", function() local animations = { idle1 = "http://www.roblox.com/asset/?id=1083195517", idle2 = "http://www.roblox.com/asset/?id=1083214717", walk = "http://www.roblox.com/asset/?id=1083178339", run = "http://www.roblox.com/asset/?id=1083216690", jump = "http://www.roblox.com/asset/?id=1083204000", climb = "http://www.roblox.com/asset/?id=1083182000", fall = "http://www.roblox.com/asset/?id=1083189010", } local player = game.Players.LocalPlayer if player.Character then applyAnimationPack(player.Character, animations) end player.CharacterAdded:Connect(function(char) applyAnimationPack(char, animations) end) end)
+credits:Button("僵尸动画包", function() local animations = { idle1 = "http://www.roblox.com/asset/?id=616158929", idle2 = "http://www.roblox.com/asset/?id=616160636", walk = "http://www.roblox.com/asset/?id=616168032", run = "http://www.roblox.com/asset/?id=616163682", jump = "http://www.roblox.com/asset/?id=616161997", climb = "http://www.roblox.com/asset/?id=616156119", fall = "http://www.roblox.com/asset/?id=616157476", } local player = game.Players.LocalPlayer if player.Character then applyAnimationPack(player.Character, animations) end player.CharacterAdded:Connect(function(char) applyAnimationPack(char, animations) end) end)
+credits:Button("巡逻动画包", function() local animations = { idle1 = "http://www.roblox.com/asset/?id=1151231324", idle2 = "http://www.roblox.com/asset/?id=1151231493", walk = "http://www.roblox.com/asset/?id=1151231493", run = "http://www.roblox.com/asset/?id=1150967949", jump = "http://www.roblox.com/asset/?id=1151231273", climb = "http://www.roblox.com/asset/?id=1151205257", fall = "http://www.roblox.com/asset/?id=1151221609", } local player = game.Players.LocalPlayer if player.Character then applyAnimationPack(player.Character, animations) end player.CharacterAdded:Connect(function(char) applyAnimationPack(char, animations) end) end)
+credits:Button("自信动画包", function() local animations = { idle1 = "http://www.roblox.com/asset/?id=1069977952", idle2 = "http://www.roblox.com/asset/?id=1070017263", walk = "http://www.roblox.com/asset/?id=1070017263", run = "http://www.roblox.com/asset/?id=1070001516", jump = "http://www.roblox.com/asset/?id=1070009696", climb = "http://www.roblox.com/asset/?id=1069946257", fall = "http://www.roblox.com/asset/?id=1069987858", } local player = game.Players.LocalPlayer if player.Character then applyAnimationPack(player.Character, animations) end player.CharacterAdded:Connect(function(char) applyAnimationPack(char, animations) end) end)
+credits:Button("流行明星动画包", function() local animations = { idle1 = "http://www.roblox.com/asset/?id=1212980338", idle2 = "http://www.roblox.com/asset/?id=1212980348", walk = "http://www.roblox.com/asset/?id=1212980338", run = "http://www.roblox.com/asset/?id=1212980348", jump = "http://www.roblox.com/asset/?id=1212980359", climb = "http://www.roblox.com/asset/?id=1212980368", fall = "http://www.roblox.com/asset/?id=1212980378", } local player = game.Players.LocalPlayer if player.Character then applyAnimationPack(player.Character, animations) end player.CharacterAdded:Connect(function(char) applyAnimationPack(char, animations) end) end)
+credits:Button("牛仔动画包", function() local animations = { idle1 = "http://www.roblox.com/asset/?id=1014390418", idle2 = "http://www.roblox.com/asset/?id=1014398616", walk = "http://www.roblox.com/asset/?id=1014421541", run = "http://www.roblox.com/asset/?id=1014401683", jump = "http://www.roblox.com/asset/?id=1014394726", climb = "http://www.roblox.com/asset/?id=1014380606", fall = "http://www.roblox.com/asset/?id=1014384572", } local player = game.Players.LocalPlayer if player.Character then applyAnimationPack(player.Character, animations) end player.CharacterAdded:Connect(function(char) applyAnimationPack(char, animations) end) end)
+credits:Button("幽灵动画包", function() local animations = { idle1 = "http://www.roblox.com/asset/?id=616006778", idle2 = "http://www.roblox.com/asset/?id=616008087", walk = "http://www.roblox.com/asset/?id=616013216", run = "http://www.roblox.com/asset/?id=616010382", jump = "http://www.roblox.com/asset/?id=616008936", climb = "http://www.roblox.com/asset/?id=616003713", fall = "http://www.roblox.com/asset/?id=616005863", } local player = game.Players.LocalPlayer if player.Character then applyAnimationPack(player.Character, animations) end player.CharacterAdded:Connect(function(char) applyAnimationPack(char, animations) end) end)
+credits:Button("鬼鬼祟祟动画包", function() local animations = { idle1 = "http://www.roblox.com/asset/?id=1132508613", idle2 = "http://www.roblox.com/asset/?id=1132510133", walk = "http://www.roblox.com/asset/?id=1132510133", run = "http://www.roblox.com/asset/?id=1132494274", jump = "http://www.roblox.com/asset/?id=1132510530", climb = "http://www.roblox.com/asset/?id=1132489853", fall = "http://www.roblox.com/asset/?id=1132501123", } local player = game.Players.LocalPlayer if player.Character then applyAnimationPack(player.Character, animations) end player.CharacterAdded:Connect(function(char) applyAnimationPack(char, animations) end) end)
+credits:Button("公主动画包", function() local animations = { idle1 = "http://www.roblox.com/asset/?id=941003647", idle2 = "http://www.roblox.com/asset/?id=941028902", walk = "http://www.roblox.com/asset/?id=941028902", run = "http://www.roblox.com/asset/?id=941015281", jump = "http://www.roblox.com/asset/?id=941008832", climb = "http://www.roblox.com/asset/?id=940996062", fall = "http://www.roblox.com/asset/?id=941000007", } local player = game.Players.LocalPlayer if player.Character then applyAnimationPack(player.Character, animations) end player.CharacterAdded:Connect(function(char) applyAnimationPack(char, animations) end) end)
+credits:Button("阿迪达斯运动动画包", function() local animations = { idle1 = "http://www.roblox.com/asset/?id=1853738548", idle2 = "http://www.roblox.com/asset/?id=1853738659", walk = "http://www.roblox.com/asset/?id=18537392113", run = "http://www.roblox.com/asset/?id=1853738490", jump = "http://www.roblox.com/asset/?id=1853738720", climb = "http://www.roblox.com/asset/?id=1853738354", fall = "http://www.roblox.com/asset/?id=1853738433", } local player = game.Players.LocalPlayer if player.Character then applyAnimationPack(player.Character, animations) end player.CharacterAdded:Connect(function(char) applyAnimationPack(char, animations) end) end)
+credits:Button("超级流行动画包", function() local animations = { idle1 = "http://www.roblox.com/asset/?id=72301599441670", idle2 = "http://www.roblox.com/asset/?id=72301599441671", walk = "http://www.roblox.com/asset/?id=92072849924640", run = "http://www.roblox.com/asset/?id=72301599441680", jump = "http://www.roblox.com/asset/?id=72301599441690", climb = "http://www.roblox.com/asset/?id=72301599441700", fall = "http://www.roblox.com/asset/?id=72301599441710", } local player = game.Players.LocalPlayer if player.Character then applyAnimationPack(player.Character, animations) end player.CharacterAdded:Connect(function(char) applyAnimationPack(char, animations) end) end)
+credits:Button("美国国家橄榄球联盟动画包", function() local animations = { idle1 = "http://www.roblox.com/asset/?id=117333533048070", idle2 = "http://www.roblox.com/asset/?id=117333533048075", walk = "http://www.roblox.com/asset/?id=110358958299415", run = "http://www.roblox.com/asset/?id=117333533048078", jump = "http://www.roblox.com/asset/?id=117333533048079", climb = "http://www.roblox.com/asset/?id=117333533048080", fall = "http://www.roblox.com/asset/?id=117333533048081", } local player = game.Players.LocalPlayer if player.Character then applyAnimationPack(player.Character, animations) end player.CharacterAdded:Connect(function(char) applyAnimationPack(char, animations) end) end)
+credits:Button("大胆动画包", function() local animations = { idle1 = "http://www.roblox.com/asset/?id=16738340600", idle2 = "http://www.roblox.com/asset/?id=16738340612", walk = "http://www.roblox.com/asset/?id=16738340646", run = "http://www.roblox.com/asset/?id=16738337225", jump = "http://www.roblox.com/asset/?id=16738340650", climb = "http://www.roblox.com/asset/?id=16738340660", fall = "http://www.roblox.com/asset/?id=16738340670", } local player = game.Players.LocalPlayer if player.Character then applyAnimationPack(player.Character, animations) end player.CharacterAdded:Connect(function(char) applyAnimationPack(char, animations) end) end)
+credits:Button("无界限动画包", function() local animations = { idle1 = "http://www.roblox.com/asset/?id=18747074100", idle2 = "http://www.roblox.com/asset/?id=18747074110", walk = "http://www.roblox.com/asset/?id=18747074203", run = "http://www.roblox.com/asset/?id=18747070484", jump = "http://www.roblox.com/asset/?id=18747074130", climb = "http://www.roblox.com/asset/?id=18747074140", fall = "http://www.roblox.com/asset/?id=18747074150", } local player = game.Players.LocalPlayer if player.Character then applyAnimationPack(player.Character, animations) end player.CharacterAdded:Connect(function(char) applyAnimationPack(char, animations) end) end)
+credits:Button("复古动画包", function() local animations = { idle1 = "http://www.roblox.com/asset/?id=10921244800", idle2 = "http://www.roblox.com/asset/?id=10921244810", walk = "http://www.roblox.com/asset/?id=10921244891", run = "http://www.roblox.com/asset/?id=10921240218", jump = "http://www.roblox.com/asset/?id=10921244820", climb = "http://www.roblox.com/asset/?id=10921244830", fall = "http://www.roblox.com/asset/?id=10921244840", } local player = game.Players.LocalPlayer if player.Character then applyAnimationPack(player.Character, animations) end player.CharacterAdded:Connect(function(char) applyAnimationPack(char, animations) end) end)
+credits:Button("猫步魅力动画包", function() local animations = { idle1 = "http://www.roblox.com/asset/?id=119377220967554", idle2 = "http://www.roblox.com/asset/?id=119377220967554", walk = "http://www.roblox.com/asset/?id=109168724482748", run = "http://www.roblox.com/asset/?id=81024476153754", jump = "http://www.roblox.com/asset/?id=119377220967554", climb = "http://www.roblox.com/asset/?id=119377220967554", fall = "http://www.roblox.com/asset/?id=119377220967554", } local player = game.Players.LocalPlayer if player.Character then applyAnimationPack(player.Character, animations) end player.CharacterAdded:Connect(function(char) applyAnimationPack(char, animations) end) end)
+credits:Button("风格化女性动画包", function() local animations = { idle1 = "http://www.roblox.com/asset/?id=4708193840", idle2 = "http://www.roblox.com/asset/?id=4708193840", walk = "http://www.roblox.com/asset/?id=4708193840", run = "http://www.roblox.com/asset/?id=470819270", jump = "http://www.roblox.com/asset/?id=4708193840", climb = "http://www.roblox.com/asset/?id=4708193840", fall = "http://www.roblox.com/asset/?id=4708193840", } local player = game.Players.LocalPlayer if player.Character then applyAnimationPack(player.Character, animations) end player.CharacterAdded:Connect(function(char) applyAnimationPack(char, animations) end) end)
+credits:Button("写实动画包", function() local animations = { idle1 = "http://www.roblox.com/asset/?id=11600249883", idle2 = "http://www.roblox.com/asset/?id=11600211410", walk = "http://www.roblox.com/asset/?id=11600249883", run = "http://www.roblox.com/asset/?id=11600211410", jump = "http://www.roblox.com/asset/?id=11600249883", climb = "http://www.roblox.com/asset/?id=11600211410", fall = "http://www.roblox.com/asset/?id=11600249883", } local player = game.Players.LocalPlayer if player.Character then applyAnimationPack(player.Character, animations) end player.CharacterAdded:Connect(function(char) applyAnimationPack(char, animations) end) end)
+credits:Button("厕所先生动画包", function() local animations = { idle1 = "http://www.roblox.com/asset/?id=10921269718", idle2 = "http://www.roblox.com/asset/?id=10921269718", walk = "http://www.roblox.com/asset/?id=10921269718", run = "http://www.roblox.com/asset/?id=4417979645", jump = "http://www.roblox.com/asset/?id=10921269718", climb = "http://www.roblox.com/asset/?id=10921269718", fall = "http://www.roblox.com/asset/?id=10921269718", } local player = game.Players.LocalPlayer if player.Character then applyAnimationPack(player.Character, animations) end player.CharacterAdded:Connect(function(char) applyAnimationPack(char, animations) end) end)
+credits:Button("Rthro风格动画包", function() local animations = { idle1 = "http://www.roblox.com/asset/?id=10921269718", idle2 = "http://www.roblox.com/asset/?id=10921269718", walk = "http://www.roblox.com/asset/?id=10921269718", run = "http://www.roblox.com/asset/?id=10921261968", jump = "http://www.roblox.com/asset/?id=10921269718", climb = "http://www.roblox.com/asset/?id=10921269718", fall = "http://www.roblox.com/asset/?id=10921269718", } local player = game.Players.LocalPlayer if player.Character then applyAnimationPack(player.Character, animations) end player.CharacterAdded:Connect(function(char) applyAnimationPack(char, animations) end) end)
+credits:Button("丧尸动画包", function() local animations = { idle1 = "http://www.roblox.com/asset/?id=3489171152", idle2 = "http://www.roblox.com/asset/?id=616160636", walk = "http://www.roblox.com/asset/?id=3489174223", run = "http://www.roblox.com/asset/?id=3489173414", jump = "http://www.roblox.com/asset/?id=616161997", climb = "http://www.roblox.com/asset/?id=616156119", fall = "http://www.roblox.com/asset/?id=616157476" } local player = game.Players.LocalPlayer if player.Character then applyAnimationPack(player.Character, animations) end player.CharacterAdded:Connect(function(char) applyAnimationPack(char, animations) end) end)
+credits:Button("嚣张动画包", function() local animations = { idle1 = "http://www.roblox.com/asset/?id=1149612882", idle2 = "http://www.roblox.com/asset/?id=1150842221", walk = "http://www.roblox.com/asset/?id=1151231493", run = "http://www.roblox.com/asset/?id=1150967949", jump = "http://www.roblox.com/asset/?id=1148811837", climb = "http://www.roblox.com/asset/?id=1148811837", fall = "http://www.roblox.com/asset/?id=1148863382" } local player = game.Players.LocalPlayer if player.Character then applyAnimationPack(player.Character, animations) end player.CharacterAdded:Connect(function(char) applyAnimationPack(char, animations) end) end)
+
+local creds = window:Tab("黑洞脚本", "6031097229")
+local credits = creds:section("黑洞脚本", false)
+credits:Button("环绕黑洞脚本v2", function()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/BOOSBS/666/refs/heads/main/656"))()
+end)
+credits:Button("环绕黑洞脚本v3", function()
+loadstring(game:HttpGet("https://rawscripts.net/raw/Universal-Script-Projeto-LKB-I-Super-Ring-V3-I-Cracked-23346"))()
+end)
+credits:Button("环绕黑洞脚本v4", function()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/wxnvxa/SRPV4/refs/heads/main/SRPV4.lua"))()
+end)
+credits:Button("环绕黑洞脚本v6", function()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/bluer0455/SAR_SangRui/refs/heads/main/SARBCDEFGMIAOMiAO"))()
+end)
+credits:Button("比较强大的环绕黑洞", function()
+pcall(function()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/hellohellohell012321/KAWAII-AURA/main/kawaii_aura.lua", true))()
+end)
+end)
+credits:Button("恶搞黑洞", function()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/bluer0455/SAR_SangRui/refs/heads/main/%E6%81%B6%E6%90%9E%E9%BB%91%E6%B4%9E", true))()
+end)
+credits:Button("个人认为比较有趣的黑洞脚本(需要搭配infiniteyield指令tpua)", function()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/SAZXHUB/Control-update/main/README.md", true))()
+end)
+credits:Button("贴身黑洞", function()
+loadstring(game:HttpGet("https://rawscripts.net/raw/Universal-Script-Fe-blackhole-re-upload-18510"))()
+end)
+credits:Button("贴身黑洞2", function()
+local Players=game:GetService("Players")local RunService=game:GetService("RunService")local UserInputService=game:GetService("UserInputService")local LocalPlayer=Players.LocalPlayer local Workspace=game:GetService("Workspace")local character=LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()local humanoidRootPart=character:WaitForChild("HumanoidRootPart")local Folder=Instance.new("Folder",Workspace)local Part=Instance.new("Part",Folder)local Attachment1=Instance.new("Attachment",Part)Part.Anchored=true Part.CanCollide=false Part.Transparency=1 if not getgenv().Network then getgenv().Network={BaseParts={},Velocity=Vector3.new(14.46262424,14.46262424,14.46262424)}Network.RetainPart=function(Part)if typeof(Part)=="Instance"and Part:IsA("BasePart")and Part:IsDescendantOf(Workspace)then table.insert(Network.BaseParts,Part)Part.CustomPhysicalProperties=PhysicalProperties.new(0,0,0,0,0)Part.CanCollide=false end end local function EnablePartControl()LocalPlayer.ReplicationFocus=Workspace RunService.Heartbeat:Connect(function()sethiddenproperty(LocalPlayer,"SimulationRadius",math.huge)for _,Part in pairs(Network.BaseParts)do if Part:IsDescendantOf(Workspace)then Part.Velocity=Network.Velocity end end end)end EnablePartControl()end local function ForcePart(v)if v:IsA("Part")and not v.Anchored and not v.Parent:FindFirstChild("Humanoid")and not v.Parent:FindFirstChild("Head")and v.Name~="Handle"then for _,x in next,v:GetChildren()do if x:IsA("BodyAngularVelocity")or x:IsA("BodyForce")or x:IsA("BodyGyro")or x:IsA("BodyPosition")or x:IsA("BodyThrust")or x:IsA("BodyVelocity")or x:IsA("RocketPropulsion")then x:Destroy()end end if v:FindFirstChild("Attachment")then v:FindFirstChild("Attachment"):Destroy()end if v:FindFirstChild("AlignPosition")then v:FindFirstChild("AlignPosition"):Destroy()end if v:FindFirstChild("Torque")then v:FindFirstChild("Torque"):Destroy()end v.CanCollide=false local Torque=Instance.new("Torque",v)Torque.Torque=Vector3.new(100000,100000,100000)local AlignPosition=Instance.new("AlignPosition",v)local Attachment2=Instance.new("Attachment",v)Torque.Attachment0=Attachment2 AlignPosition.MaxForce=9999999999999999 AlignPosition.MaxVelocity=math.huge AlignPosition.Responsiveness=200 AlignPosition.Attachment0=Attachment2 AlignPosition.Attachment1=Attachment1 end end local blackHoleActive=true local function toggleBlackHole()blackHoleActive=not blackHoleActive if blackHoleActive then for _,v in next,Workspace:GetDescendants()do ForcePart(v)end Workspace.DescendantAdded:Connect(function(v)if blackHoleActive then ForcePart(v)end end)spawn(function()while blackHoleActive and RunService.RenderStepped:Wait()do Attachment1.WorldCFrame=humanoidRootPart.CFrame end end)end end local function createRainbowEffect(object,isText)local hue=0 local function updateColor()hue=(hue+0.002)%1 local color=Color3.fromHSV(hue,1,isText and 1 or 0.5)if isText then object.TextColor3=color else object.BackgroundColor3=color end end RunService.RenderStepped:Connect(updateColor)end local function createControlButton()local screenGui=Instance.new("ScreenGui")local button=Instance.new("TextButton")screenGui.Name="BlackHoleControlGUI"screenGui.Parent=LocalPlayer:WaitForChild("PlayerGui")button.Name="ToggleBlackHoleButton"button.Size=UDim2.new(0,200,0,50)button.Position=UDim2.new(0.5,-100,0,100)button.Text="T岷痶 Black Hole"button.TextScaled=true button.Parent=screenGui createRainbowEffect(button,false)createRainbowEffect(button,true)local dragging=false local dragInput,mousePos,framePos button.InputBegan:Connect(function(input)if input.UserInputType==Enum.UserInputType.MouseButton1 or input.UserInputType==Enum.UserInputType.Touch then dragging=true mousePos=input.Position framePos=button.Position input.Changed:Connect(function()if input.UserInputState==Enum.UserInputState.End then dragging=false end end)end end)button.InputChanged:Connect(function(input)if input.UserInputType==Enum.UserInputType.MouseMovement or input.UserInputType==Enum.UserInputType.Touch then dragInput=input end end)UserInputService.InputChanged:Connect(function(input)if input==dragInput and dragging then local delta=input.Position-mousePos button.Position=UDim2.new(framePos.X.Scale,framePos.X.Offset+delta.X,framePos.Y.Scale,framePos.Y.Offset+delta.Y)end end)button.MouseButton1Click:Connect(function()toggleBlackHole()if blackHoleActive then button.Text="off Black Hole"else button.Text="on Black Hole"end end)end createControlButton()end)
+
+updatePlayerAttributes()
